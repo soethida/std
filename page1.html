@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page 1</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .code-container {
+            background-color: #f4f4f4;
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .code {
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+        }
+        .figure {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .figure img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Machine Learning with Python</h1>
+
+    <section>
+        <h2>Text Section</h2>
+        <p>This is a paragraph of text. You can write your content here.</p>
+    </section>
+
+    <section>
+        <h2>Programming Code</h2>
+        <div class="code-container">
+            <pre class="code">
+# This is a Python code
+np.random.seed(42)
+x11 = 5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+x12 = 5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+X_1 = np.concatenate((x11, x12),axis = 1)
+x21 = 7.5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+x22 = 7.5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1)
+X_2 = np.concatenate((x21, x22),axis = 1)
+x31 = 10 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+x32 = 10 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1)
+X_3 = np.concatenate((x31, x32),axis = 1)
+
+            </pre>
+        </div>
+    </section>
+
+    <section>
+        <h2>Output Figure</h2>
+        <div class="figure">
+            <img src="page1.jpeg" alt="Sample Figure">
+            <figcaption>Figure 1: Sample Figure Caption</figcaption>
+        </div>
+    </section>
+
+    <section>
+        <h2>Summary</h2>
+        <p>This is a paragraph of text. You can write your content here.</p>
+    </section>
+
+    <p>Go back to the <a href="index.html">Click Top Home Page</a>.</p>
+    
+</body>
+</html>
+
