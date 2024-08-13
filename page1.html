@@ -3,25 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
     <title>K-means Clustering</title>
     <style>
         body {
             font-family: Georgia, 'Times New Roman', Times, serif;
             margin: 20px;
         }
+        
+        h1 {
+            color: blue;
+            text-align: center;
+        }
+        ul {
+            list-style-type: disc; /* Changes bullets to squares */
+        }
         .code-container {
-            color: white;
-            background-color:rgb(14, 13, 13,1);
-            border: 1px solid #e5e8e9;
-            padding: 10px;
-            margin: 20px 0;
+            color: white;            
+            /*background-color:rgb(14, 13, 13,1);
+            border: 1px solid #e5e8e9;*/
+            padding: 0px;
+            margin: 0px;
             overflow-x: auto;
         }
-        .code {
-            font-family: 'Courier New', Courier, monospace;
+        .code {            
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            color: #852a8c; /* Black text */
+            background-color: #f5f5f5; /* Light gray background */
+            padding: 0px;
+            border-radius: 0px;
+            display: block;
+            white-space: pre-wrap;
+            /*font-family: 'Courier New', Courier, monospace;
             white-space: pre;
-            font-size: 18px;
-            }
+            font-size: 18px;*/
+            }  
+        .output-code{
+            color: #000000; /* Black text */
+            background-color: #ece3e3; /* Light gray background */
+            padding: 0px;
+            border-radius: 0px;
+            display: block;
+            white-space: pre-wrap;
+        }            
+       
         .figure {
             text-align: center;
             margin: 20px 0;
@@ -33,291 +58,430 @@
     </style>
 </head>
 <body>
-
     <h1>Machine Learning with Python</h1>
-
-    <section>
-        <h2>Text Section</h2>
-        <p>This is a paragraph of text. You can write your content here.</p>
-    </section>
-
-    <section>
-        <h2>Programming Code</h2>
-        <div class="code-container">
-            <pre class="code">
-# This is a Python code
-np.random.seed(42)
-x11 = 5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
-x12 = 5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
-X_1 = np.concatenate((x11, x12),axis = 1)
-x21 = 7.5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
-x22 = 7.5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1)
-X_2 = np.concatenate((x21, x22),axis = 1)
-x31 = 10 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
-x32 = 10 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1)
-X_3 = np.concatenate((x31, x32),axis = 1)
-fig,ax = plt.subplots()
-ax.plot(X_1[:,0],X_1[:,1],'bo')
-ax.plot(X_2[:,0],X_2[:,1],'kx')
-ax.plot(X_3[:,0],X_3[:,1],'m+')
-ax.set_xlabel('X1')
-ax.set_xlabel('X2')
-
-            </pre>
-        </div>
-    </section>
-
-    <section>
-        <h2>Output Figure</h2>
-        <div class="figure">
-            <img src="one.png" alt="Sample Figure">
-            <figcaption>Figure 1: Sample Figure Caption</figcaption>
-        </div>
-    </section>
-
-    <section>
-        <h2>Text Section</h2>
-        <p>This is a paragraph of text. You can write your content here.</p>
-    </section>
-
-    <section>
-        <h2>Programming Code</h2>
-        <div class="code-container">
-            <pre class="code">
-# This is a Python code
-X = np.concatenate((X_1, X_2, X_3),axis = 0)
-fig,ax = plt.subplots()
-ax.plot(X[:,0], X[:,1],'b.')
-ax.set_xlabel('X1')
-ax.set_xlabel('X2')
-
-            </pre>
-        </div>
-    </section>
-
-    <section>
-        <h2>Output Figure</h2>
-        <div class="figure">
-            <img src="two.png" alt="Sample Figure">
-            <figcaption>Figure 2: Sample Figure Caption</figcaption>
-        </div>
-    </section>
-
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
     
-
-    <section>
-        <h2>Text Section</h2>
-        <p>This is a paragraph of text. You can write your content here.</p>
-    </section>
-
-    <section>
-        <h2>Programming Code</h2>
-        <div class="code-container">
-            <pre class="code">
-# This is a Python code
-def initializeCGs(X, K):
-    # Initialize CG as zeros
-    CGs = np.zeros((K, X.shape[1]))
-
-    # Randomly reorder the indices of examples
-    randidx = np.random.permutation(X.shape[0])
-
-    # Take the first K examples as CGs
-    CGs = X[randidx[:K], :]
-
-    return CGs
-
-    nClusters = 3
-mu = initializeCGs(X, nClusters)
-mu
-
-fig,ax = plt.subplots()
-ax.plot(X[:,0], X[:,1],'b.')
-ax.set_xlabel('X1')
-ax.set_xlabel('X2')
-colors = ['ro','kx','m+']
-for (k,color) in zip(range(nClusters),colors):
-    ax.plot(mu[k,0],mu[k,1],color,markersize = 10)
-
-            </pre>
-        </div>
-    </section>
-
-    <section>
-        <h2>Output Figure</h2>
-        <div class="figure">
-            <img src="three.png" alt="Sample Figure">
-            <figcaption>Figure 3: Sample Figure Caption</figcaption>
-        </div>
-    </section>
-
-    <section>
-        <h2>Text Section</h2>
-        <p>This is a paragraph of text. You can write your content here.</p>
-    </section>
-
-    <section>
-        <h2>Programming Code</h2>
-        <div class="code-container">
-            <pre class="code">
-# This is a Python code
-def clusterbyClosestCGs(X, CGs):
-    # get number of clusters
-    nClusters = CGs.shape[0]
-
-    # Initialize idx. Index array size = (number of samples in dataset)
-    idx = np.zeros(X.shape[0], dtype=int)
-
-    # Iterate over each example in the dataset X
-    for i in range(X.shape[0]):
-        # Compute the squared Euclidean distance to each centroid
-        d = np.sum((X[i] -  CGs) ** 2, axis=1)
-
-        # Find the index of the closest centroid
-        idx[i] = np.argmin(d) 
-
-    return idx
-
-    idx = clusterbyClosestCGs(X,mu)
-idx
-
-fig,ax = plt.subplots()
-colors = ['ro','kx','m+']
-for (k,color) in zip(range(nClusters),colors):
-    ax.plot(X[np.where(idx==k),0],X[np.where(idx==k),1],color)
-ax.set_xlabel('X1')
-ax.set_xlabel('X2')
-
-            </pre>
-        </div>
-    </section>
-
-    <section>
-        <h2>Output Figure</h2>
-        <div class="figure">
-            <img src="four.png" alt="Sample Figure">
-            <figcaption>Figure 4: Sample Figure Caption</figcaption>
-        </div>
-    </section>
-
-    <section>
-        <h2>Text Section</h2>
-        <p>This is a paragraph of text. You can write your content here.</p>
-    </section>
-
-    <section>
-        <h2>Programming Code</h2>
-        <div class="code-container">
-            <pre class="code">
-# This is a Python code
-def calculateCGs(X, idx, nClusters):
-    # Get sample size and feature size
-    m, n = X.shape
-
-    # Initialize centroids matrix. 
-    CGs = np.zeros((nClusters, n))
-
-    # Loop over every cluster and compute the mean value of data samples in cluster k
-    for i in range(nClusters):
-        # Find indices of data samples assigned to cluster i
-        index = np.where(idx == i)[0]
-
-        # Compute the mean of the data samples assigned to cluster i
-        if len(index) > 0:
-            CGs[i - 1, :] = np.mean(X[index, :], axis=0)
-
-    return CGs
-
-    mu_new = calculateCG(X, idx, nClusters)
-mu_new
-
-fig,ax = plt.subplots()
-ax.plot(X[:,0], X[:,1],'b.')
-ax.set_xlabel('X1')
-ax.set_ylabel('X2')
-colors = ['ro','kx','m+']
-for (k,color) in zip(range(nClusters),colors):
-    ax.plot(mu_new[k,0],mu_new[k,1],color,markersize = 10)
-
-            </pre>
-        </div>
-    </section>
-
-    <section>
-        <h2>Output Figure</h2>
-        <div class="figure">
-            <img src="five.png" alt="Sample Figure">
-            <figcaption>Figure 5: Sample Figure Caption</figcaption>
-        </div>
-    </section>
-
-    <section>
-        <h2>Text Section</h2>
-        <p>This is a paragraph of text. You can write your content here.</p>
-    </section>
-
-    <section>
-        <h2>Programming Code</h2>
-        <div class="code-container">
-            <pre class="code">
-# This is a Python code
-def runkMeans(X, initial_CGs, max_iters):
-    # Initialize values
-    m, n = X.shape
-    nClusters = initial_CGs.shape[0]
-    CGs = initial_CGs
-    previous_CGs = CGs
-    idx = np.zeros(m, dtype=int)
-
-    # Run K-Means
-    for i in range(max_iters):
-        # Output progress
-        print(f'K-Means iteration {i + 1}/{max_iters}...')
-        
-        # For each example in X, assign it to the closest centroid
-        idx = clusterbyClosestCGs(X, CGs)
-
-        # Given the memberships, compute new centroids
-        CGs = calculateCGs(X, idx, nClusters)
+          <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+            <!-- <img src="assets/img/logo.png" alt=""> -->
+            </a>
     
-    return CGs, idx
-
-    # Settings for running K-Means
-max_iters = 10
-nClusters = 3
-initial_CGs = initializeCGs(X,nClusters)
-
-CGs, idx = runkMeans(X, initial_CGs, max_iters)
-
-fig,ax = plt.subplots()
-colors = ['bo','kx','m+']
-for (k,color) in zip(range(nClusters),colors):
-    ax.plot(X[np.where(idx==k),0],X[np.where(idx==k),1],color)
-ax.set_xlabel('X1')
-ax.set_xlabel('X2')
-
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="index.html" class="active">Home<br></a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#services">Services</a></li>
+              <li><a href="#portfolio">Portfolio</a></li>
+              <li><a href="#team">Team</a></li>
+              <li class="dropdown"><a href="#"><span></span>Machine Learning Techniques<i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <ul>
+                  <li><a href="page1.html">K-means Clustering</a></li>                  
+                  <li><a href="#">Dropdown 2</a></li>
+                  <li><a href="#">Dropdown 3</a></li>
+                  <li><a href="#">Dropdown 4</a></li>
+                </ul>
+              </li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>       
+        </div>
+      </header>
+    <section>
+        <h2>Kmeans Clustering</h2>             
+        <p>Clustering is forming a group of similar or like items into clusters based on common attirbutes. It can be used in any application areas; 
+            <ul>
+                <li>clustering shirts based on size</li>
+                <li>clustering images based on pixel values</li>
+                <li>clustering people based on demographics</li>
+                <li>clustering housing based on its attributes such as lot area, price and number of floors</li>
+                <li>clustering document or texts based on content (topic modeling)</li>
+            </ul>
+            In this notebook, concept of clustering will be explained and demonstrated with a simple and clear example.
+        </p>
+    </section>
+    <section>
+        <div class="code-container">
+            <pre class="code">
+                import numpy as np
+                import matplotlib.pyplot as plt
+            </pre>
+        </div>
+    </section>
+    <section>
+        <h2>Generating dataset</h2>
+        <p>First, data custers of 50 samples with two features are generated. Dataset is intentionally created so that it contains three clusters. Clusters are designed to center at 5, 7.5 and 10.</p>
+    </section>
+    <section>
+        <div class="code-container">
+            <pre class="code">
+                np.random.seed(42)
+                x11 = 5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+                x12 = 5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+                X_1 = np.concatenate((x11, x12),axis = 1)
+                x21 = 7.5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+                x22 = 7.5 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1)
+                X_2 = np.concatenate((x21, x22),axis = 1)
+                x31 = 10 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1) 
+                x32 = 10 + 2*np.random.rand(50,1) - 2*np.random.rand(50,1)
+                X_3 = np.concatenate((x31, x32),axis = 1)
+            </pre>
+        </div>
+    </section>
+    <section>
+        <h2>Visualizing the data</h2>
+        <p>Data clusters are plotted with feature 1, X<sub>1</sub> on x-axis and feature 2, X<sub>2</sub> on y-axis. As generated, you will see data are spread over three clusters as follows:</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                fig,ax = plt.subplots()
+                ax.plot(X_1[:,0],X_1[:,1],'bo')
+                ax.plot(X_2[:,0],X_2[:,1],'kx')
+                ax.plot(X_3[:,0],X_3[:,1],'m+')
+                ax.set_xlabel('X1')
+                ax.set_ylabel('X2')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="figure">
+            <img src="one.png" alt="One">            
+        </div>
+    </section>
+    <section>
+        <p>As you see in the Figure above, the cluster in blue has ranges of X<sub>1</sub> between 3 and 7, and X<sub>2</sub> between 3 and 7 also. That for the black cluster is between 7 and 9 for both features. That for the the magenta cluster is between 9 and 12. Then, the dataset is created by concatenating three clusters in the row direction.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                # concatenating the three clusters along the row direction.
+                X = np.concatenate((X_1, X_2, X_3),axis = 0)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                # visaluzing the dataset
+                fig,ax = plt.subplots()
+                ax.plot(X[:,0], X[:,1],'b.')
+                ax.set_xlabel('$X_1$')
+                ax.set_xlabel('$X_2$')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="figure">
+            <img src="two.png" alt="Two">            
+        </div>
+    </section>    
+    <section>        
+        <p>Clustering by k-means is based on the distance between each data sample. This will be started by initiating the initial locations of centroids. If you need nClusters number of clusters, you have to initialize nCluster number of centriods.<br>
+            Appropriate initial locations of centroids are nClusters number of samples randomly picked up from the dataset so that the initiated locations of centroids do not fall beyond the range of the sample points. The intializeCGs function is defined to pick up nClusters sample points to be used as the initial centroids as follows:
+        </p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+            def initializeCGs(X, nClusters):
+                # Initialize CG as zeros
+                CGs = np.zeros((nClusters, X.shape[1]))
+            
+                # Randomly reorder the indices of examples
+                randidx = np.random.permutation(X.shape[0])
+            
+                # Take the first K examples as CGs
+                CGs = X[randidx[:nClusters], :]
+            
+                return CGs
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <p>In this example, three clusters will be formed so the initial centroids of three clusters are initialized using initializeCGs function. Note that the shape of centroids, CGs is (nCluster, n), where nCluster and n are the numbers of cluster and features.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                nClusters = 3
+                mu = initializeCGs(X, nClusters)
+                mu, mu.shape
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (array([[10.68829731,  9.36782973],
+                [ 7.17069191,  7.43175243],
+                [ 6.49296094,  8.11974314]]),
+                (3, 2))
+            </pre>
+        </div>
+    </section>
+    <section>       
+        <p>The initial locations of centriods are plotted together with the dataset with red circle, black cross and magenta +.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                fig,ax = plt.subplots()
+                ax.plot(X[:,0], X[:,1],'b.')
+                ax.set_xlabel('$X_1$')
+                ax.set_xlabel('$X_2$')
+                colors = ['ro','kx','m+']
+                for (k,color) in zip(range(nClusters),colors):
+                    ax.plot(mu[k,0],mu[k,1],color,markersize = 10)
+            </pre>
+        </div>
+    </section>
+    <section>
+        <div class="figure">
+            <img src="three.png" alt="Three">           
+        </div>
+    </section>
+    <section>        
+        <p>Next, the Euclidean distance between every sample in the dataset and three different centriods of three clusters will be computed. Then, the distance of a sample to all three centroids will be compared and the nearest cluster from a data sample will be taken as the cluster which the data sample belongs to. So, each data sample belongs to the nearest cluster from them. To compute the distances and determined the index of the cluster the samples belong to, the clusterbyClosestCGs function is defined. Indices for Cluster 1, 2 and 3 are 0, 1 and 2.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                def clusterbyClosestCGs(X, CGs):
+                # get number of clusters
+                nClusters = CGs.shape[0]
+            
+                # Initialize idx. Index array size = (number of samples in dataset)
+                idx = np.zeros(X.shape[0], dtype=int)
+            
+                # Iterate over each example in the dataset X
+                for i in range(X.shape[0]):
+                    # Compute the squared Euclidean distance to each centroid
+                    d = np.sum((X[i] -  CGs) ** 2, axis=1)
+            
+                    # Find the index of the closest centroid
+                    idx[i] = np.argmin(d) 
+            
+                return idx
             </pre>
         </div>
     </section>
 
-    <section>
-        <h2>Output Figure</h2>
-        <div class="figure">
-            <img src="six.png" alt="Sample Figure">
-            <figcaption>Figure 6: Sample Figure Caption</figcaption>
+    <section>        
+        <p>Now the code can be tested as follows. As you see, based on the locations of initial centroids, the data samples are clustered to their respective clusters with the nearest distance to the centroids. Note that the shape of indices is (m,1), where m is the number of sample points in the data set.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                idx = clusterbyClosestCGs(X,mu)
+                idx
+            </pre>
         </div>
     </section>
-
-
-
-    <section>
-        <h2>Summary</h2>
-        <p>This is a paragraph of text. You can write your content here.</p>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                array([1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 2,
+                        1, 1, 1, 1, 2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 2, 1, 2, 2, 1, 1, 1,
+                        1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1, 2,
+                        1, 1, 1, 1, 2, 2, 2, 1, 2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2,
+                        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+            </pre>
+        </div>
     </section>
-
-
-    <p>Go back to the <a href="index.html">Click Top Home Page</a>.</p>
-    
+    <section>        
+        <p>Clusters after the first round of computation is plotted below.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                fig,ax = plt.subplots()
+                colors = ['ro','kx','m+']
+                for (k,color) in zip(range(nClusters),colors):
+                    ax.plot(X[np.where(idx==k),0],X[np.where(idx==k),1],color)
+                ax.set_xlabel('$X_1$')
+                ax.set_xlabel('$X_2$')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="figure">
+            <img src="four.png" alt="Four">            
+        </div>
+    </section>
+    <p>After we assigned the clusters for every sample, new locations of centroids will be determined by using calculateCGs function as defined follows. This can be done using the mean value function. Note that the shape of centriods, CGs is (nCluster, n), where nCluster is number of cluster and n is number of features in the dataset.
+        <br>For a given cluster C<sub>i</sub> with m data points, each data point X<sub>j</sub> = (X<sub>j1</sub>,X<sub>j2</sub>) is a vector in two-dimensional space. i is from 0 to nCluster and j is 0 to number of data points. The centroid &mu;<sub>i</sub> = (&mu;<sub>i1</sub>,&mu;<sub>i2</sub>) of cluster C<sub>i</sub> is computed as the mean of all the data points in that cluster.
+        <br>
+        <br>For each feature:
+        <br>
+        &mu;<sub>i1</sub>= 1/m &Sigma;<sup>m</sup><sub>j=1</sub> X<sub>j1</sub>,<br>
+        &mu;<sub>i2</sub>= 1/m &Sigma;<sup>m</sup><sub>j=1</sub> X<sub>j2</sub>,<br>
+        where:
+        <ul>
+            <li>m is the number of data points in the dataset,</li>
+            <li>X<sub>j1</sub> and X<sub>j2</sub> are the values of the 1st, 2nd, and 3rd features of the jth data point in the dataset,</li>
+            <li>&mu;<sub>i1</sub> and &mu;<sub>i2</sub> are the coordinates of the centroid in the feature space for the cluster C<sub>i</sub>.</li>
+        </ul>
+        The centroid <b>&mu;<sub>i</sub></b> can be expressed as a vector:
+        <b>&mu;<sub>i</sub></b>= (1/m &Sigma;<sup>m</sup><sub>j=1</sub> X<sub>j1</sub>, 1/m &Sigma;<sup>m</sup><sub>j=1</sub> X<sub>j2</sub>)<br>
+        In a more compact form:
+        <b>&mu;<sub>i</sub></b>= 1/m &Sigma;<sup>m</sup><sub>j=1</sub> X<sub>j</sub>
+    </p>       
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                def calculateCGs(X, idx, nClusters):
+                # Get sample size and feature size
+                m, n = X.shape
+            
+                # Initialize centroids matrix. 
+                CGs = np.zeros((nClusters, n))
+            
+                # Loop over every cluster and compute the mean value of data samples in cluster k
+                for i in range(nClusters):
+                    # Find indices of data samples assigned to cluster i
+                    index = np.where(idx == i)[0]
+            
+                    # Compute the mean of the data samples assigned to cluster i
+                    if len(index) > 0:
+                        CGs[i - 1, :] = np.mean(X[index, :], axis=0)
+            
+                return CGs
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <p>Below is the newly updated locations of centroids computed using samples in each cluster.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                mu_new = calculateCGs(X, idx, nClusters)
+                mu_new
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                array([[ 6.35131528,  5.79335631],
+                        [ 5.68640331,  7.31271531],
+                        [ 9.96045495, 10.28390632]])
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <p>Updated centroids and clusters can be seen in the Figure below.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                fig,ax = plt.subplots()
+                colors = ['ro','kx','m+']
+                for (k,color) in zip(range(nClusters),colors):
+                    ax.plot(X[np.where(idx==k),0],X[np.where(idx==k),1],color)
+                ax.set_xlabel('$X_{1}$')
+                ax.set_ylabel('$X_{2}$')
+                colors = ['ko','mx','r+']
+                for (k,color) in zip(range(nClusters),colors):
+                    ax.plot(mu_new[k,0],mu_new[k,1],color,markersize = 10)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="figure">
+            <img src="five.png" alt="Five">            
+        </div>
+    </section>
+    <section>        
+        <p>These steps of finding centroids of clusters, grouping clusters which the samples belong to will be iterated until the maximum number of iterations is reached or the locations of centroids do not change. The runkmeans function is defined for this purpose.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                def runkmeans(X, initial_CGs, max_iters):
+                # Initialize values
+                m, n = X.shape
+                nClusters = initial_CGs.shape[0]
+                CGs = initial_CGs
+                previous_CGs = CGs
+                idx = np.zeros(m, dtype=int)
+            
+                # Run K-Means
+                for i in range(max_iters):
+                    # Output progress
+                    print(f'K-means iteration {i + 1}/{max_iters}...')
+                    
+                    # For each example in X, assign it to the closest centroid
+                    idx = clusterbyClosestCGs(X, CGs)
+            
+                    # Given the memberships, compute new centroids
+                    CGs = calculateCGs(X, idx, nClusters)
+                
+                return CGs, idx
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <p>The clustering iteration is run for 10 times in this example. After 10 iterations, final clusters and their centriods are obtained.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                # Settings for running K-Means
+                max_iters = 10
+                nClusters = 3
+                initial_CGs = initializeCGs(X,nClusters)
+                
+                CGs, idx = runkmeans(X, initial_CGs, max_iters)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                K-Means iteration 1/10...
+                K-Means iteration 2/10...
+                K-Means iteration 3/10...
+                K-Means iteration 4/10...
+                K-Means iteration 5/10...
+                K-Means iteration 6/10...
+                K-Means iteration 7/10...
+                K-Means iteration 8/10...
+                K-Means iteration 9/10...
+                K-Means iteration 10/10...
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <p>Final centroids and clusters are plotted as follows.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                fig,ax = plt.subplots()
+                colors = ['bo','kx','m+']
+                for (k,color) in zip(range(nClusters),colors):
+                    ax.plot(X[np.where(idx==k),0],X[np.where(idx==k),1],color)
+                ax.set_xlabel('$X_{1}$')
+                ax.set_xlabel('$X_{2}$')
+                colors = ['ko','mx','bs']
+                for (k,color) in zip(range(nClusters),colors):
+                    ax.plot(CGs[k,0],CGs[k,1],color,markersize = 15)
+            </pre>
+        </div>
+    </section>     
+    <section>        
+        <div class="figure">
+            <img src="six.png" alt="Six">            
+        </div>
+    </section>
+    <section>        
+        <p>As you can see, k-means clustering successfully clustered samples into three clusters. I hope that you have clearly understood the concept of k-means clustering and steps involved. As mentioned at the beginning, please think of area of application in your field and test the k-means algorithm you have learned here.</p>
+    </section>      
 </body>
 </html>
 
