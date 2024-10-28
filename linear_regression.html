@@ -1,0 +1,3345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="main.css" rel="stylesheet">
+    <title>Linear Regression</title>
+    <style>
+        body {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            margin: 20px;
+        }
+        
+        h1{
+            color: blue;
+            text-align: center;
+        }
+        ul {
+            list-style-type: disc; /* Changes bullets to squares */
+        }
+        .code-container {
+            color: white;            
+            /*background-color:rgb(14, 13, 13,1);
+            border: 1px solid #e5e8e9;*/
+            padding: 0px;
+            margin: 0px;
+            overflow-x: auto;
+        }
+        .code {            
+            font-family:Verdana, Geneva, Tahoma, sans-serif;
+            color: #852a8c; /* Black text */
+            background-color: #f5f5f5; /* Light gray background */
+            padding: 0px;
+            border-radius: 0px;
+            display: block;
+            white-space: pre-wrap;
+            /*font-family: 'Courier New', Courier, monospace;
+            white-space: pre;
+            font-size: 18px;*/
+            }  
+        .output-code{
+            color: #000000; /* Black text */
+            background-color: #ece3e3; /* Light gray background */
+            padding: 0px;
+            border-radius: 0px;
+            display: block;
+            white-space: pre-wrap;
+        }            
+       
+        .figure {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .figure img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1 style = "color: black;">Machine Learning with Python</h1>
+    <h1 style = "text-align: right;font-size: 20px;">Thein Min Htike</h1>
+    <h1 style = "text-align: right;color: red;font-size: 20px;">Click Top Engineering</h1>
+    <header id="header" class="header d-flex align-items-center fixed-top">
+        <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
+    
+          <a href="index.html" class="logo d-flex align-items-center me-auto me-lg-0">
+            <!-- Uncomment the line below if you also wish to use an image logo -->
+            <!-- <img src="assets/img/logo.png" alt=""> -->
+            </a>
+    
+          <nav id="navmenu" class="navmenu">
+            <ul>
+              <li><a href="index.html" class="active">Home<br></a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#services">Services</a></li>
+              <li><a href="#portfolio">Portfolio</a></li>
+              <li><a href="#team">Team</a></li>
+              <li class="dropdown"><a href="#"><span></span>Machine Learning Techniques<i class="bi bi-chevron-down toggle-dropdown"></i></a>
+                <ul>
+                  <li><a href="k_means.html">K-means Clustering</a></li>                  
+                  <li><a href="linear_regression.html">Linear Regression</a></li>
+                  <li><a href="#">Dropdown 3</a></li>
+                  <li><a href="#">Dropdown 4</a></li>
+                </ul>
+              </li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+          </nav>       
+        </div>
+      </header>
+    <section>
+        <h2>Linear Regression</h2>      
+        <p>In this project, linear regression based prediction model for predicting housing price will be demonstrated. The model comprises of the following steps:
+            <ul>
+                <li>Data Exploration & Cleaning</li>
+                <li>Featuring using Label Encoding</li>
+                <li>Exploratory Data Analysis</li>
+                <li>Training the Model</li>
+                <li>Validation of the Model</li>
+            </ul>            
+        </p>
+    </section>
+    <section>
+        <div class="code-container">
+            <pre class="code">
+                import pandas as pd
+                import numpy as np
+                import sklearn 
+                import seaborn as sbs
+            </pre>
+        </div>
+    </section>    
+    <section>
+        <div class="code-container">
+            <pre class="code">
+               data = pd.read_csv('housing_price.csv')
+               print(data.shape) 
+               data.head()              
+            </pre>
+        </div>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1460, 81)
+                <div>
+                    <style scoped>
+                        .dataframe tbody tr th:only-of-type {
+                            vertical-align: middle;
+                        }
+                    
+                        .dataframe tbody tr th {
+                            vertical-align: top;
+                        }
+                    
+                        .dataframe thead th {
+                            text-align: right;
+                        }
+                    </style>
+                    <table border="1" class="dataframe">
+                      <thead>
+                        <tr style="text-align: right;">
+                          <th></th>
+                          <th>Id</th>
+                          <th>MSSubClass</th>
+                          <th>MSZoning</th>
+                          <th>LotFrontage</th>
+                          <th>LotArea</th>
+                          <th>Street</th>
+                          <th>Alley</th>
+                          <th>LotShape</th>
+                          <th>LandContour</th>
+                          <th>Utilities</th>
+                          <th>...</th>
+                          <th>PoolArea</th>
+                          <th>PoolQC</th>
+                          <th>Fence</th>
+                          <th>MiscFeature</th>
+                          <th>MiscVal</th>
+                          <th>MoSold</th>
+                          <th>YrSold</th>
+                          <th>SaleType</th>
+                          <th>SaleCondition</th>
+                          <th>SalePrice</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>0</th>
+                          <td>1</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>65.0</td>
+                          <td>8450</td>
+                          <td>Pave</td>
+                          <td>NaN</td>
+                          <td>Reg</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>208500</td>
+                        </tr>
+                        <tr>
+                          <th>1</th>
+                          <td>2</td>
+                          <td>20</td>
+                          <td>RL</td>
+                          <td>80.0</td>
+                          <td>9600</td>
+                          <td>Pave</td>
+                          <td>NaN</td>
+                          <td>Reg</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>0</td>
+                          <td>5</td>
+                          <td>2007</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>181500</td>
+                        </tr>
+                        <tr>
+                          <th>2</th>
+                          <td>3</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>68.0</td>
+                          <td>11250</td>
+                          <td>Pave</td>
+                          <td>NaN</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>0</td>
+                          <td>9</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>223500</td>
+                        </tr>
+                        <tr>
+                          <th>3</th>
+                          <td>4</td>
+                          <td>70</td>
+                          <td>RL</td>
+                          <td>60.0</td>
+                          <td>9550</td>
+                          <td>Pave</td>
+                          <td>NaN</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2006</td>
+                          <td>WD</td>
+                          <td>Abnorml</td>
+                          <td>140000</td>
+                        </tr>
+                        <tr>
+                          <th>4</th>
+                          <td>5</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>84.0</td>
+                          <td>14260</td>
+                          <td>Pave</td>
+                          <td>NaN</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>NaN</td>
+                          <td>0</td>
+                          <td>12</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>250000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>5 rows × 81 columns</p>
+                    </div>
+            </pre>
+        </div>
+    </section>
+    
+    <section>
+        <div class="code-container">
+            <h2>Data Exploration and Cleaning</h2>
+            <pre class="code">                
+                data.info() 
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                <class 'pandas.core.frame.DataFrame'>
+                    RangeIndex: 1460 entries, 0 to 1459
+                    Data columns (total 81 columns):
+                     #   Column         Non-Null Count  Dtype  
+                    ---  ------         --------------  -----  
+                     0   Id             1460 non-null   int64  
+                     1   MSSubClass     1460 non-null   int64  
+                     2   MSZoning       1460 non-null   object 
+                     3   LotFrontage    1201 non-null   float64
+                     4   LotArea        1460 non-null   int64  
+                     5   Street         1460 non-null   object 
+                     6   Alley          91 non-null     object 
+                     7   LotShape       1460 non-null   object 
+                     8   LandContour    1460 non-null   object 
+                     9   Utilities      1460 non-null   object 
+                     10  LotConfig      1460 non-null   object 
+                     11  LandSlope      1460 non-null   object 
+                     12  Neighborhood   1460 non-null   object 
+                     13  Condition1     1460 non-null   object 
+                     14  Condition2     1460 non-null   object 
+                     15  BldgType       1460 non-null   object 
+                     16  HouseStyle     1460 non-null   object 
+                     17  OverallQual    1460 non-null   int64  
+                     18  OverallCond    1460 non-null   int64  
+                     19  YearBuilt      1460 non-null   int64  
+                     20  YearRemodAdd   1460 non-null   int64  
+                     21  RoofStyle      1460 non-null   object 
+                     22  RoofMatl       1460 non-null   object 
+                     23  Exterior1st    1460 non-null   object 
+                     24  Exterior2nd    1460 non-null   object 
+                     25  MasVnrType     588 non-null    object 
+                     26  MasVnrArea     1452 non-null   float64
+                     27  ExterQual      1460 non-null   object 
+                     28  ExterCond      1460 non-null   object 
+                     29  Foundation     1460 non-null   object 
+                     30  BsmtQual       1423 non-null   object 
+                     31  BsmtCond       1423 non-null   object 
+                     32  BsmtExposure   1422 non-null   object 
+                     33  BsmtFinType1   1423 non-null   object 
+                     34  BsmtFinSF1     1460 non-null   int64  
+                     35  BsmtFinType2   1422 non-null   object 
+                     36  BsmtFinSF2     1460 non-null   int64  
+                     37  BsmtUnfSF      1460 non-null   int64  
+                     38  TotalBsmtSF    1460 non-null   int64  
+                     39  Heating        1460 non-null   object 
+                     40  HeatingQC      1460 non-null   object 
+                     41  CentralAir     1460 non-null   object 
+                     42  Electrical     1459 non-null   object 
+                     43  1stFlrSF       1460 non-null   int64  
+                     44  2ndFlrSF       1460 non-null   int64  
+                     45  LowQualFinSF   1460 non-null   int64  
+                     46  GrLivArea      1460 non-null   int64  
+                     47  BsmtFullBath   1460 non-null   int64  
+                     48  BsmtHalfBath   1460 non-null   int64  
+                     49  FullBath       1460 non-null   int64  
+                     50  HalfBath       1460 non-null   int64  
+                     51  BedroomAbvGr   1460 non-null   int64  
+                     52  KitchenAbvGr   1460 non-null   int64  
+                     53  KitchenQual    1460 non-null   object 
+                     54  TotRmsAbvGrd   1460 non-null   int64  
+                     55  Functional     1460 non-null   object 
+                     56  Fireplaces     1460 non-null   int64  
+                     57  FireplaceQu    770 non-null    object 
+                     58  GarageType     1379 non-null   object 
+                     59  GarageYrBlt    1379 non-null   float64
+                     60  GarageFinish   1379 non-null   object 
+                     61  GarageCars     1460 non-null   int64  
+                     62  GarageArea     1460 non-null   int64  
+                     63  GarageQual     1379 non-null   object 
+                     64  GarageCond     1379 non-null   object 
+                     65  PavedDrive     1460 non-null   object 
+                     66  WoodDeckSF     1460 non-null   int64  
+                     67  OpenPorchSF    1460 non-null   int64  
+                     68  EnclosedPorch  1460 non-null   int64  
+                     69  3SsnPorch      1460 non-null   int64  
+                     70  ScreenPorch    1460 non-null   int64  
+                     71  PoolArea       1460 non-null   int64  
+                     72  PoolQC         7 non-null      object 
+                     73  Fence          281 non-null    object 
+                     74  MiscFeature    54 non-null     object 
+                     75  MiscVal        1460 non-null   int64  
+                     76  MoSold         1460 non-null   int64  
+                     77  YrSold         1460 non-null   int64  
+                     78  SaleType       1460 non-null   object 
+                     79  SaleCondition  1460 non-null   object 
+                     80  SalePrice      1460 non-null   int64  
+                    dtypes: float64(3), int64(35), object(43)
+                    memory usage: 924.0+ KB
+                    Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...                    
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                cols = data.columns
+                cols
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Index(['Id', 'MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street',
+                        'Alley', 'LotShape', 'LandContour', 'Utilities', 'LotConfig',
+                        'LandSlope', 'Neighborhood', 'Condition1', 'Condition2', 'BldgType',
+                        'HouseStyle', 'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd',
+                        'RoofStyle', 'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType',
+                        'MasVnrArea', 'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual',
+                        'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinSF1',
+                        'BsmtFinType2', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', 'Heating',
+                        'HeatingQC', 'CentralAir', 'Electrical', '1stFlrSF', '2ndFlrSF',
+                        'LowQualFinSF', 'GrLivArea', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath',
+                        'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'KitchenQual',
+                        'TotRmsAbvGrd', 'Functional', 'Fireplaces', 'FireplaceQu', 'GarageType',
+                        'GarageYrBlt', 'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual',
+                        'GarageCond', 'PavedDrive', 'WoodDeckSF', 'OpenPorchSF',
+                        'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'PoolQC',
+                        'Fence', 'MiscFeature', 'MiscVal', 'MoSold', 'YrSold', 'SaleType',
+                        'SaleCondition', 'SalePrice'],
+                        dtype='object')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                category_cols = []
+                non_category_cols = []
+                threshold = 25
+                for i in range(len(cols)):
+                    if len(pd.unique(data[cols[i]])) > threshold:
+                        non_category_cols.append(cols[i])
+                    else:
+                        category_cols.append(cols[i])
+                print(category_cols)
+                print(non_category_cols)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                ['MSSubClass', 'MSZoning', 'Street', 'Alley', 'LotShape', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope', 'Neighborhood', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle', 'OverallQual', 'OverallCond', 'RoofStyle', 'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrType', 'ExterQual', 'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2', 'Heating', 'HeatingQC', 'CentralAir', 'Electrical', 'LowQualFinSF', 'BsmtFullBath', 'BsmtHalfBath', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'KitchenQual', 'TotRmsAbvGrd', 'Functional', 'Fireplaces', 'FireplaceQu', 'GarageType', 'GarageFinish', 'GarageCars', 'GarageQual', 'GarageCond', 'PavedDrive', '3SsnPorch', 'PoolArea', 'PoolQC', 'Fence', 'MiscFeature', 'MiscVal', 'MoSold', 'YrSold', 'SaleType', 'SaleCondition']
+                ['Id', 'LotFrontage', 'LotArea', 'YearBuilt', 'YearRemodAdd', 'MasVnrArea', 'BsmtFinSF1', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF', '1stFlrSF', '2ndFlrSF', 'GrLivArea', 'GarageYrBlt', 'GarageArea', 'WoodDeckSF', 'OpenPorchSF', 'EnclosedPorch', 'ScreenPorch', 'SalePrice']
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                category_dict = {}
+                for col in category_cols:
+                    category_dict[col]=pd.unique(data[col])
+                category_dict
+            </pre>
+        </div>
+    </section>
+
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                {'MSSubClass': array([ 60,  20,  70,  50, 190,  45,  90, 120,  30,  85,  80, 160,  75,
+                                        180,  40], dtype=int64),
+                'MSZoning': array(['RL', 'RM', 'C (all)', 'FV', 'RH'], dtype=object),
+                'Street': array(['Pave', 'Grvl'], dtype=object),
+                'Alley': array([nan, 'Grvl', 'Pave'], dtype=object),
+                'LotShape': array(['Reg', 'IR1', 'IR2', 'IR3'], dtype=object),
+                'LandContour': array(['Lvl', 'Bnk', 'Low', 'HLS'], dtype=object),
+                'Utilities': array(['AllPub', 'NoSeWa'], dtype=object),
+                'LotConfig': array(['Inside', 'FR2', 'Corner', 'CulDSac', 'FR3'], dtype=object),
+                'LandSlope': array(['Gtl', 'Mod', 'Sev'], dtype=object),
+                'Neighborhood': array(['CollgCr', 'Veenker', 'Crawfor', 'NoRidge', 'Mitchel', 'Somerst',
+                        'NWAmes', 'OldTown', 'BrkSide', 'Sawyer', 'NridgHt', 'NAmes',
+                        'SawyerW', 'IDOTRR', 'MeadowV', 'Edwards', 'Timber', 'Gilbert',
+                        'StoneBr', 'ClearCr', 'NPkVill', 'Blmngtn', 'BrDale', 'SWISU',
+                        'Blueste'], dtype=object),
+                'Condition1': array(['Norm', 'Feedr', 'PosN', 'Artery', 'RRAe', 'RRNn', 'RRAn', 'PosA',
+                        'RRNe'], dtype=object),
+                'Condition2': array(['Norm', 'Artery', 'RRNn', 'Feedr', 'PosN', 'PosA', 'RRAn', 'RRAe'],
+                    dtype=object),
+                'BldgType': array(['1Fam', '2fmCon', 'Duplex', 'TwnhsE', 'Twnhs'], dtype=object),
+                'HouseStyle': array(['2Story', '1Story', '1.5Fin', '1.5Unf', 'SFoyer', 'SLvl', '2.5Unf',
+                        '2.5Fin'], dtype=object),
+                'OverallQual': array([ 7,  6,  8,  5,  9,  4, 10,  3,  1,  2], dtype=int64),
+                'OverallCond': array([5, 8, 6, 7, 4, 2, 3, 9, 1], dtype=int64),
+                'RoofStyle': array(['Gable', 'Hip', 'Gambrel', 'Mansard', 'Flat', 'Shed'], dtype=object),
+                'RoofMatl': array(['CompShg', 'WdShngl', 'Metal', 'WdShake', 'Membran', 'Tar&Grv',
+                        'Roll', 'ClyTile'], dtype=object),
+                'Exterior1st': array(['VinylSd', 'MetalSd', 'Wd Sdng', 'HdBoard', 'BrkFace', 'WdShing',
+                        'CemntBd', 'Plywood', 'AsbShng', 'Stucco', 'BrkComm', 'AsphShn',
+                        'Stone', 'ImStucc', 'CBlock'], dtype=object),
+                'Exterior2nd': array(['VinylSd', 'MetalSd', 'Wd Shng', 'HdBoard', 'Plywood', 'Wd Sdng',
+                        'CmentBd', 'BrkFace', 'Stucco', 'AsbShng', 'Brk Cmn', 'ImStucc',
+                        'AsphShn', 'Stone', 'Other', 'CBlock'], dtype=object),
+                'MasVnrType': array(['BrkFace', nan, 'Stone', 'BrkCmn'], dtype=object),
+                'ExterQual': array(['Gd', 'TA', 'Ex', 'Fa'], dtype=object),
+                'ExterCond': array(['TA', 'Gd', 'Fa', 'Po', 'Ex'], dtype=object),
+                'Foundation': array(['PConc', 'CBlock', 'BrkTil', 'Wood', 'Slab', 'Stone'], dtype=object),
+                'BsmtQual': array(['Gd', 'TA', 'Ex', nan, 'Fa'], dtype=object),
+                'BsmtCond': array(['TA', 'Gd', nan, 'Fa', 'Po'], dtype=object),
+                'BsmtExposure': array(['No', 'Gd', 'Mn', 'Av', nan], dtype=object),
+                'BsmtFinType1': array(['GLQ', 'ALQ', 'Unf', 'Rec', 'BLQ', nan, 'LwQ'], dtype=object),
+                'BsmtFinType2': array(['Unf', 'BLQ', nan, 'ALQ', 'Rec', 'LwQ', 'GLQ'], dtype=object),
+                'Heating': array(['GasA', 'GasW', 'Grav', 'Wall', 'OthW', 'Floor'], dtype=object),
+                'HeatingQC': array(['Ex', 'Gd', 'TA', 'Fa', 'Po'], dtype=object),
+                'CentralAir': array(['Y', 'N'], dtype=object),
+                'Electrical': array(['SBrkr', 'FuseF', 'FuseA', 'FuseP', 'Mix', nan], dtype=object),
+                'LowQualFinSF': array([  0, 360, 513, 234, 528, 572, 144, 392, 371, 390, 420, 473, 156,
+                        515,  80,  53, 232, 481, 120, 514, 397, 479, 205, 384], dtype=int64),
+                'BsmtFullBath': array([1, 0, 2, 3], dtype=int64),
+                'BsmtHalfBath': array([0, 1, 2], dtype=int64),
+                'FullBath': array([2, 1, 3, 0], dtype=int64),
+                'HalfBath': array([1, 0, 2], dtype=int64),
+                'BedroomAbvGr': array([3, 4, 1, 2, 0, 5, 6, 8], dtype=int64),
+                'KitchenAbvGr': array([1, 2, 3, 0], dtype=int64),
+                'KitchenQual': array(['Gd', 'TA', 'Ex', 'Fa'], dtype=object),
+                'TotRmsAbvGrd': array([ 8,  6,  7,  9,  5, 11,  4, 10, 12,  3,  2, 14], dtype=int64),
+                'Functional': array(['Typ', 'Min1', 'Maj1', 'Min2', 'Mod', 'Maj2', 'Sev'], dtype=object),
+                'Fireplaces': array([0, 1, 2, 3], dtype=int64),
+                'FireplaceQu': array([nan, 'TA', 'Gd', 'Fa', 'Ex', 'Po'], dtype=object),
+                'GarageType': array(['Attchd', 'Detchd', 'BuiltIn', 'CarPort', nan, 'Basment', '2Types'],
+                    dtype=object),
+                'GarageFinish': array(['RFn', 'Unf', 'Fin', nan], dtype=object),
+                'GarageCars': array([2, 3, 1, 0, 4], dtype=int64),
+                'GarageQual': array(['TA', 'Fa', 'Gd', nan, 'Ex', 'Po'], dtype=object),
+                'GarageCond': array(['TA', 'Fa', nan, 'Gd', 'Po', 'Ex'], dtype=object),
+                'PavedDrive': array(['Y', 'N', 'P'], dtype=object),
+                '3SsnPorch': array([  0, 320, 407, 130, 180, 168, 140, 508, 238, 245, 196, 144, 182,
+                        162,  23, 216,  96, 153, 290, 304], dtype=int64),
+                'PoolArea': array([  0, 512, 648, 576, 555, 480, 519, 738], dtype=int64),
+                'PoolQC': array([nan, 'Ex', 'Fa', 'Gd'], dtype=object),
+                'Fence': array([nan, 'MnPrv', 'GdWo', 'GdPrv', 'MnWw'], dtype=object),
+                'MiscFeature': array([nan, 'Shed', 'Gar2', 'Othr', 'TenC'], dtype=object),
+                'MiscVal': array([    0,   700,   350,   500,   400,   480,   450, 15500,  1200,
+                        800,  2000,   600,  3500,  1300,    54,   620,   560,  1400,
+                        8300,  1150,  2500], dtype=int64),
+                'MoSold': array([ 2,  5,  9, 12, 10,  8, 11,  4,  1,  7,  3,  6], dtype=int64),
+                'YrSold': array([2008, 2007, 2006, 2009, 2010], dtype=int64),
+                'SaleType': array(['WD', 'New', 'COD', 'ConLD', 'ConLI', 'CWD', 'ConLw', 'Con', 'Oth'],
+                    dtype=object),
+                'SaleCondition': array(['Normal', 'Abnorml', 'Partial', 'AdjLand', 'Alloca', 'Family'],
+                    dtype=object)}
+                Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                data[non_category_cols].dtypes
+            </pre>
+        </div>
+    </section>
+
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Id                 int64
+                LotFrontage      float64
+                LotArea            int64
+                YearBuilt          int64
+                YearRemodAdd       int64
+                MasVnrArea       float64
+                BsmtFinSF1         int64
+                BsmtFinSF2         int64
+                BsmtUnfSF          int64
+                TotalBsmtSF        int64
+                1stFlrSF           int64
+                2ndFlrSF           int64
+                GrLivArea          int64
+                GarageYrBlt      float64
+                GarageArea         int64
+                WoodDeckSF         int64
+                OpenPorchSF        int64
+                EnclosedPorch      int64
+                ScreenPorch        int64
+                SalePrice          int64
+                dtype: object
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                (m,n) = data.shape
+                m,n
+            </pre>
+        </div>
+    </section>
+
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1460, 81)
+            </pre>
+        </div>        
+    </section>
+    <section>
+        <p>There are 81 columns, the first 80 columns are the features and the last column is the price which is the target. Next we check which columns contain null values.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                dataCount = data.count()
+                dataCount
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Id               1460
+                MSSubClass       1460
+                MSZoning         1460
+                LotFrontage      1201
+                LotArea          1460
+                                ... 
+                MoSold           1460
+                YrSold           1460
+                SaleType         1460
+                SaleCondition    1460
+                SalePrice        1460
+                Length: 81, dtype: int64
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                nullCol = dataCount[dataCount < m].index
+                print(nullCol)
+                print(f'There are {len(nullCol):d} columns containing NaN.')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Index(['LotFrontage', 'Alley', 'MasVnrType', 'MasVnrArea', 'BsmtQual',
+                        'BsmtCond', 'BsmtExposure', 'BsmtFinType1', 'BsmtFinType2',
+                        'Electrical', 'FireplaceQu', 'GarageType', 'GarageYrBlt',
+                        'GarageFinish', 'GarageQual', 'GarageCond', 'PoolQC', 'Fence',
+                        'MiscFeature'],
+                        dtype='object')
+                There are 19 columns containing NaN.
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                nullColCount = data[nullCol].count()/m*100
+                nullColCount
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                LotFrontage     82.260274
+                Alley            6.232877
+                MasVnrType      40.273973
+                MasVnrArea      99.452055
+                BsmtQual        97.465753
+                BsmtCond        97.465753
+                BsmtExposure    97.397260
+                BsmtFinType1    97.465753
+                BsmtFinType2    97.397260
+                Electrical      99.931507
+                FireplaceQu     52.739726
+                GarageType      94.452055
+                GarageYrBlt     94.452055
+                GarageFinish    94.452055
+                GarageQual      94.452055
+                GarageCond      94.452055
+                PoolQC           0.479452
+                Fence           19.246575
+                MiscFeature      3.698630
+                dtype: float64
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                dropCol = nullColCount[nullColCount < 53]
+                dropCol
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Alley           6.232877
+                MasVnrType     40.273973
+                FireplaceQu    52.739726
+                PoolQC          0.479452
+                Fence          19.246575
+                MiscFeature     3.698630
+                dtype: float64
+            </pre>
+        </div>        
+    </section>
+    <section>
+        <p>As seen above, six columns were removed.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                cleanCol = nullColCount[nullColCount>53]
+                cleanCol
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                LotFrontage     82.260274
+                MasVnrArea      99.452055
+                BsmtQual        97.465753
+                BsmtCond        97.465753
+                BsmtExposure    97.397260
+                BsmtFinType1    97.465753
+                BsmtFinType2    97.397260
+                Electrical      99.931507
+                GarageType      94.452055
+                GarageYrBlt     94.452055
+                GarageFinish    94.452055
+                GarageQual      94.452055
+                GarageCond      94.452055
+                dtype: float64
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df = data.drop(dropCol.index,axis=1)
+                print(df.columns)
+                print(df.shape)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Index(['Id', 'MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street',
+                        'LotShape', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope',
+                        'Neighborhood', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle',
+                        'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', 'RoofStyle',
+                        'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrArea', 'ExterQual',
+                        'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond', 'BsmtExposure',
+                        'BsmtFinType1', 'BsmtFinSF1', 'BsmtFinType2', 'BsmtFinSF2', 'BsmtUnfSF',
+                        'TotalBsmtSF', 'Heating', 'HeatingQC', 'CentralAir', 'Electrical',
+                        '1stFlrSF', '2ndFlrSF', 'LowQualFinSF', 'GrLivArea', 'BsmtFullBath',
+                        'BsmtHalfBath', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr',
+                        'KitchenQual', 'TotRmsAbvGrd', 'Functional', 'Fireplaces', 'GarageType',
+                        'GarageYrBlt', 'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual',
+                        'GarageCond', 'PavedDrive', 'WoodDeckSF', 'OpenPorchSF',
+                        'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal',
+                        'MoSold', 'YrSold', 'SaleType', 'SaleCondition', 'SalePrice'],
+                        dtype='object')
+                (1460, 75)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df[cleanCol.index].count()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                LotFrontage     1201
+                MasVnrArea      1452
+                BsmtQual        1423
+                BsmtCond        1423
+                BsmtExposure    1422
+                BsmtFinType1    1423
+                BsmtFinType2    1422
+                Electrical      1459
+                GarageType      1379
+                GarageYrBlt     1379
+                GarageFinish    1379
+                GarageQual      1379
+                GarageCond      1379
+                dtype: int64
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df2 = df.copy()
+                df2.dropna(inplace=True)
+                df2.shape
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1094, 75)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                m
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                1460
+            </pre>
+        </div>        
+    </section>
+    <section>
+        <p>As seen above, 396 rows were lost which is 25% of the dataset. In actual application, care must be done not to drop significant portion of the data but use necessary data imputation.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                losspercent = (m-df2.shape[0])/m*100
+                losspercent
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                25.068493150684933
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                cleanCols = cleanCol.index
+                cleanCols
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Index(['LotFrontage', 'MasVnrArea', 'BsmtQual', 'BsmtCond', 'BsmtExposure',
+                        'BsmtFinType1', 'BsmtFinType2', 'Electrical', 'GarageType',
+                        'GarageYrBlt', 'GarageFinish', 'GarageQual', 'GarageCond'],
+                        dtype='object')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                print(df2.shape)
+                df2.head()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1094, 75)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">                
+                <div>
+                    <style scoped>
+                        .dataframe tbody tr th:only-of-type {
+                            vertical-align: middle;
+                        }
+                    
+                        .dataframe tbody tr th {
+                            vertical-align: top;
+                        }
+                    
+                        .dataframe thead th {
+                            text-align: right;
+                        }
+                    </style>
+                    <table border ="1" class="dataframe">
+                      <thead>
+                        <tr style="text-align: right;">
+                          <th></th>
+                          <th>Id</th>
+                          <th>MSSubClass</th>
+                          <th>MSZoning</th>
+                          <th>LotFrontage</th>
+                          <th>LotArea</th>
+                          <th>Street</th>
+                          <th>LotShape</th>
+                          <th>LandContour</th>
+                          <th>Utilities</th>
+                          <th>LotConfig</th>
+                          <th>...</th>
+                          <th>EnclosedPorch</th>
+                          <th>3SsnPorch</th>
+                          <th>ScreenPorch</th>
+                          <th>PoolArea</th>
+                          <th>MiscVal</th>
+                          <th>MoSold</th>
+                          <th>YrSold</th>
+                          <th>SaleType</th>
+                          <th>SaleCondition</th>
+                          <th>SalePrice</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>0</th>
+                          <td>1</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>65.0</td>
+                          <td>8450</td>
+                          <td>Pave</td>
+                          <td>Reg</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>Inside</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>208500</td>
+                        </tr>
+                        <tr>
+                          <th>1</th>
+                          <td>2</td>
+                          <td>20</td>
+                          <td>RL</td>
+                          <td>80.0</td>
+                          <td>9600</td>
+                          <td>Pave</td>
+                          <td>Reg</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>FR2</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>5</td>
+                          <td>2007</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>181500</td>
+                        </tr>
+                        <tr>
+                          <th>2</th>
+                          <td>3</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>68.0</td>
+                          <td>11250</td>
+                          <td>Pave</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>Inside</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>9</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>223500</td>
+                        </tr>
+                        <tr>
+                          <th>3</th>
+                          <td>4</td>
+                          <td>70</td>
+                          <td>RL</td>
+                          <td>60.0</td>
+                          <td>9550</td>
+                          <td>Pave</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>Corner</td>
+                          <td>...</td>
+                          <td>272</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2006</td>
+                          <td>WD</td>
+                          <td>Abnorml</td>
+                          <td>140000</td>
+                        </tr>
+                        <tr>
+                          <th>4</th>
+                          <td>5</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>84.0</td>
+                          <td>14260</td>
+                          <td>Pave</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>FR2</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>12</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>250000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>5 rows × 75 columns</p>
+                    </div>
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df2.count()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Id               1094
+                MSSubClass       1094
+                MSZoning         1094
+                LotFrontage      1094
+                LotArea          1094
+                                ... 
+                MoSold           1094
+                YrSold           1094
+                SaleType         1094
+                SaleCondition    1094
+                SalePrice        1094
+                Length: 75, dtype: int64
+            </pre>
+        </div>        
+    </section>
+    <section>
+        <p>Another way is data imputation instead of dropping NA which can sometiems lead to significant data loss.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                from sklearn.impute import SimpleImputer
+                imp = SimpleImputer(missing_values=np.nan, strategy='mean')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df3 = df.copy()
+                for col in cleanCols:
+                    if df3[col].dtypes != 'object':
+                        df3[col] = imp.fit_transform(df3[col].values.reshape(-1,1))
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df3[cleanCols].count()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                LotFrontage     1460
+                MasVnrArea      1460
+                BsmtQual        1423
+                BsmtCond        1423
+                BsmtExposure    1422
+                BsmtFinType1    1423
+                BsmtFinType2    1422
+                Electrical      1459
+                GarageType      1379
+                GarageYrBlt     1460
+                GarageFinish    1379
+                GarageQual      1379
+                GarageCond      1379
+                dtype: int64
+            </pre>
+        </div>        
+    </section>
+    <section>
+        <p>Check any changes in statistical mean and standard deviation after imputation.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df3[cleanCols[0]].mean(), df3[cleanCols[0]].std()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (70.04995836802664, 22.024022688706943)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df[cleanCols[0]].mean(), df[cleanCols[0]].std()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (70.04995836802665, 24.284751774483183)
+            </pre>
+        </div>  
+    </section>
+    <section>
+        <p>As you see above, statistical mean is unchanged and standard deviation changes slighlty for the first cleanCols.</p>
+    </section>
+    <section>        
+        <p>Visialize the first column before and after imputation to see any significant differences.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                import matplotlib.pyplot as plt
+                fig, ax = plt.subplots()
+                ax.plot(range(m),df[cleanCols[0]],'b',linewidth=2)
+                ax.plot(range(m),df3[cleanCols[0]],'r--',linewidth=1)
+                ax.set_xlabel('data samples')
+                ax.set_ylabel('Lot Frontage')
+                ax.legend(['original','imputated'])
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                <matplotlib.legend.Legend at 0x1dac9e8ba10></matplotlib.legend.Legend>
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="figure">
+            <img src="seven.png" alt="Seven">            
+        </div>
+    </section>    
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                imp2 = SimpleImputer( strategy='most_frequent')
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                for col in cleanCols:
+                if df3[col].dtypes == 'object':
+                    print(col)
+                    df3[col] = imp2.fit_transform(df3[col].values.reshape(-1,1)).reshape(-1)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                BsmtQual
+                BsmtCond
+                BsmtExposure
+                BsmtFinType1
+                BsmtFinType2
+                Electrical
+                GarageType
+                GarageFinish
+                GarageQual
+                GarageCond
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df3.count()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Id               1460
+                MSSubClass       1460
+                MSZoning         1460
+                LotFrontage      1460
+                LotArea          1460
+                                ... 
+                MoSold           1460
+                YrSold           1460
+                SaleType         1460
+                SaleCondition    1460
+                SalePrice        1460
+                Length: 75, dtype: int64
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df3.head()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                <div>
+                    <style scoped>
+                        .dataframe tbody tr th:only-of-type {
+                            vertical-align: middle;
+                        }
+                    
+                        .dataframe tbody tr th {
+                            vertical-align: top;
+                        }
+                    
+                        .dataframe thead th {
+                            text-align: right;
+                        }
+                    </style>
+                    <table border="1" class="dataframe">
+                      <thead>
+                        <tr style="text-align: right;">
+                          <th></th>
+                          <th>Id</th>
+                          <th>MSSubClass</th>
+                          <th>MSZoning</th>
+                          <th>LotFrontage</th>
+                          <th>LotArea</th>
+                          <th>Street</th>
+                          <th>LotShape</th>
+                          <th>LandContour</th>
+                          <th>Utilities</th>
+                          <th>LotConfig</th>
+                          <th>...</th>
+                          <th>EnclosedPorch</th>
+                          <th>3SsnPorch</th>
+                          <th>ScreenPorch</th>
+                          <th>PoolArea</th>
+                          <th>MiscVal</th>
+                          <th>MoSold</th>
+                          <th>YrSold</th>
+                          <th>SaleType</th>
+                          <th>SaleCondition</th>
+                          <th>SalePrice</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>0</th>
+                          <td>1</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>65.0</td>
+                          <td>8450</td>
+                          <td>Pave</td>
+                          <td>Reg</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>Inside</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>208500</td>
+                        </tr>
+                        <tr>
+                          <th>1</th>
+                          <td>2</td>
+                          <td>20</td>
+                          <td>RL</td>
+                          <td>80.0</td>
+                          <td>9600</td>
+                          <td>Pave</td>
+                          <td>Reg</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>FR2</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>5</td>
+                          <td>2007</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>181500</td>
+                        </tr>
+                        <tr>
+                          <th>2</th>
+                          <td>3</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>68.0</td>
+                          <td>11250</td>
+                          <td>Pave</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>Inside</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>9</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>223500</td>
+                        </tr>
+                        <tr>
+                          <th>3</th>
+                          <td>4</td>
+                          <td>70</td>
+                          <td>RL</td>
+                          <td>60.0</td>
+                          <td>9550</td>
+                          <td>Pave</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>Corner</td>
+                          <td>...</td>
+                          <td>272</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2006</td>
+                          <td>WD</td>
+                          <td>Abnorml</td>
+                          <td>140000</td>
+                        </tr>
+                        <tr>
+                          <th>4</th>
+                          <td>5</td>
+                          <td>60</td>
+                          <td>RL</td>
+                          <td>84.0</td>
+                          <td>14260</td>
+                          <td>Pave</td>
+                          <td>IR1</td>
+                          <td>Lvl</td>
+                          <td>AllPub</td>
+                          <td>FR2</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>12</td>
+                          <td>2008</td>
+                          <td>WD</td>
+                          <td>Normal</td>
+                          <td>250000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>5 rows × 75 columns</p>
+                    </div>
+            </pre>
+        </div>        
+    </section>
+    <section>
+        <p>As you see above, since null values are imputed with proper strategies, 25% data loss encountered by simple dropping of null values can be prevented.</p>
+    </section>
+    <section>
+        <div>
+            <h2>Label Encoding</h2>
+            <p>Label encoding is used to convert categorical data of object type of discrete values.</p>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                from sklearn.preprocessing import LabelEncoder
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                label_encoder = LabelEncoder()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                newCols = df3.columns
+                objectCols = []
+                for col in newCols:
+                    if df3[col].dtypes == 'object':
+                        objectCols.append(col)
+                objectCols
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                ['MSZoning',
+                'Street',
+                'LotShape',
+                'LandContour',
+                'Utilities',
+                'LotConfig',
+                'LandSlope',
+                'Neighborhood',
+                'Condition1',
+                'Condition2',
+                'BldgType',
+                'HouseStyle',
+                'RoofStyle',
+                'RoofMatl',
+                'Exterior1st',
+                'Exterior2nd',
+                'ExterQual',
+                'ExterCond',
+                'Foundation',
+                'BsmtQual',
+                'BsmtCond',
+                'BsmtExposure',
+                'BsmtFinType1',
+                'BsmtFinType2',
+                'Heating',
+                'HeatingQC',
+                'CentralAir',
+                'Electrical',
+                'KitchenQual',
+                'Functional',
+                'GarageType',
+                'GarageFinish',
+                'GarageQual',
+                'GarageCond',
+                'PavedDrive',
+                'SaleType',
+                'SaleCondition']
+                Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+            </pre>
+        </div>
+    </section>    
+    <section>
+        <p>Then, unique values under each 'object' data columns are found and a dictionary containing category as key and corresponding discrete values as values is constructed.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                cat_map =[]
+                for i in objectCols:
+                    cats = pd.unique(df3[i])
+                    cat_dict = {}
+                    cats = sorted(cats)
+                    for j in range(len(cats)):
+                        cat_dict[cats[j]] = j
+                    cat_map.append(cat_dict)
+                cat_map
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                [{'C (all)': 0, 'FV': 1, 'RH': 2, 'RL': 3, 'RM': 4},
+                {'Grvl': 0, 'Pave': 1},
+                {'IR1': 0, 'IR2': 1, 'IR3': 2, 'Reg': 3},
+                {'Bnk': 0, 'HLS': 1, 'Low': 2, 'Lvl': 3},
+                {'AllPub': 0, 'NoSeWa': 1},
+                {'Corner': 0, 'CulDSac': 1, 'FR2': 2, 'FR3': 3, 'Inside': 4},
+                {'Gtl': 0, 'Mod': 1, 'Sev': 2},
+                {'Blmngtn': 0,
+                'Blueste': 1,
+                'BrDale': 2,
+                'BrkSide': 3,
+                'ClearCr': 4,
+                'CollgCr': 5,
+                'Crawfor': 6,
+                'Edwards': 7,
+                'Gilbert': 8,
+                'IDOTRR': 9,
+                'MeadowV': 10,
+                'Mitchel': 11,
+                'NAmes': 12,
+                'NPkVill': 13,
+                'NWAmes': 14,
+                'NoRidge': 15,
+                'NridgHt': 16,
+                'OldTown': 17,
+                'SWISU': 18,
+                'Sawyer': 19,
+                'SawyerW': 20,
+                'Somerst': 21,
+                'StoneBr': 22,
+                'Timber': 23,
+                'Veenker': 24},
+                {'Artery': 0,
+                'Feedr': 1,
+                'Norm': 2,
+                'PosA': 3,
+                'PosN': 4,
+                'RRAe': 5,
+                'RRAn': 6,
+                'RRNe': 7,
+                'RRNn': 8},
+                {'Artery': 0,
+                'Feedr': 1,
+                'Norm': 2,
+                'PosA': 3,
+                'PosN': 4,
+                'RRAe': 5,
+                'RRAn': 6,
+                'RRNn': 7},
+                {'1Fam': 0, '2fmCon': 1, 'Duplex': 2, 'Twnhs': 3, 'TwnhsE': 4},
+                {'1.5Fin': 0,
+                '1.5Unf': 1,
+                '1Story': 2,
+                '2.5Fin': 3,
+                '2.5Unf': 4,
+                '2Story': 5,
+                'SFoyer': 6,
+                'SLvl': 7},
+                {'Flat': 0, 'Gable': 1, 'Gambrel': 2, 'Hip': 3, 'Mansard': 4, 'Shed': 5},
+                {'ClyTile': 0,
+                'CompShg': 1,
+                'Membran': 2,
+                'Metal': 3,
+                'Roll': 4,
+                'Tar&Grv': 5,
+                'WdShake': 6,
+                'WdShngl': 7},
+                {'AsbShng': 0,
+                'AsphShn': 1,
+                'BrkComm': 2,
+                'BrkFace': 3,
+                'CBlock': 4,
+                'CemntBd': 5,
+                'HdBoard': 6,
+                'ImStucc': 7,
+                'MetalSd': 8,
+                'Plywood': 9,
+                'Stone': 10,
+                'Stucco': 11,
+                'VinylSd': 12,
+                'Wd Sdng': 13,
+                'WdShing': 14},
+                {'AsbShng': 0,
+                'AsphShn': 1,
+                'Brk Cmn': 2,
+                'BrkFace': 3,
+                'CBlock': 4,
+                'CmentBd': 5,
+                'HdBoard': 6,
+                'ImStucc': 7,
+                'MetalSd': 8,
+                'Other': 9,
+                'Plywood': 10,
+                'Stone': 11,
+                'Stucco': 12,
+                'VinylSd': 13,
+                'Wd Sdng': 14,
+                'Wd Shng': 15},
+                {'Ex': 0, 'Fa': 1, 'Gd': 2, 'TA': 3},
+                {'Ex': 0, 'Fa': 1, 'Gd': 2, 'Po': 3, 'TA': 4},
+                {'BrkTil': 0, 'CBlock': 1, 'PConc': 2, 'Slab': 3, 'Stone': 4, 'Wood': 5},
+                {'Ex': 0, 'Fa': 1, 'Gd': 2, 'TA': 3},
+                {'Fa': 0, 'Gd': 1, 'Po': 2, 'TA': 3},
+                {'Av': 0, 'Gd': 1, 'Mn': 2, 'No': 3},
+                {'ALQ': 0, 'BLQ': 1, 'GLQ': 2, 'LwQ': 3, 'Rec': 4, 'Unf': 5},
+                {'ALQ': 0, 'BLQ': 1, 'GLQ': 2, 'LwQ': 3, 'Rec': 4, 'Unf': 5},
+                {'Floor': 0, 'GasA': 1, 'GasW': 2, 'Grav': 3, 'OthW': 4, 'Wall': 5},
+                {'Ex': 0, 'Fa': 1, 'Gd': 2, 'Po': 3, 'TA': 4},
+                {'N': 0, 'Y': 1},
+                {'FuseA': 0, 'FuseF': 1, 'FuseP': 2, 'Mix': 3, 'SBrkr': 4},
+                {'Ex': 0, 'Fa': 1, 'Gd': 2, 'TA': 3},
+                {'Maj1': 0, 'Maj2': 1, 'Min1': 2, 'Min2': 3, 'Mod': 4, 'Sev': 5, 'Typ': 6},
+                {'2Types': 0,
+                'Attchd': 1,
+                'Basment': 2,
+                'BuiltIn': 3,
+                'CarPort': 4,
+                'Detchd': 5},
+                {'Fin': 0, 'RFn': 1, 'Unf': 2},
+                {'Ex': 0, 'Fa': 1, 'Gd': 2, 'Po': 3, 'TA': 4},
+                {'Ex': 0, 'Fa': 1, 'Gd': 2, 'Po': 3, 'TA': 4},
+                {'N': 0, 'P': 1, 'Y': 2},
+                {'COD': 0,
+                'CWD': 1,
+                'Con': 2,
+                'ConLD': 3,
+                'ConLI': 4,
+                'ConLw': 5,
+                'New': 6,
+                'Oth': 7,
+                'WD': 8},
+                {'Abnorml': 0,
+                'AdjLand': 1,
+                'Alloca': 2,
+                'Family': 3,
+                'Normal': 4,
+                'Partial': 5}]
+                Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df3[objectCols] = df3[objectCols].apply(label_encoder.fit_transform)
+                df3.head()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                <div>
+                    <style scoped>
+                        .dataframe tbody tr th:only-of-type {
+                            vertical-align: middle;
+                        }
+                    
+                        .dataframe tbody tr th {
+                            vertical-align: top;
+                        }
+                    
+                        .dataframe thead th {
+                            text-align: right;
+                        }
+                    </style>
+                    <table border="1" class="dataframe">
+                      <thead>
+                        <tr style="text-align: right;">
+                          <th></th>
+                          <th>Id</th>
+                          <th>MSSubClass</th>
+                          <th>MSZoning</th>
+                          <th>LotFrontage</th>
+                          <th>LotArea</th>
+                          <th>Street</th>
+                          <th>LotShape</th>
+                          <th>LandContour</th>
+                          <th>Utilities</th>
+                          <th>LotConfig</th>
+                          <th>...</th>
+                          <th>EnclosedPorch</th>
+                          <th>3SsnPorch</th>
+                          <th>ScreenPorch</th>
+                          <th>PoolArea</th>
+                          <th>MiscVal</th>
+                          <th>MoSold</th>
+                          <th>YrSold</th>
+                          <th>SaleType</th>
+                          <th>SaleCondition</th>
+                          <th>SalePrice</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th>0</th>
+                          <td>1</td>
+                          <td>60</td>
+                          <td>3</td>
+                          <td>65.0</td>
+                          <td>8450</td>
+                          <td>1</td>
+                          <td>3</td>
+                          <td>3</td>
+                          <td>0</td>
+                          <td>4</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2008</td>
+                          <td>8</td>
+                          <td>4</td>
+                          <td>208500</td>
+                        </tr>
+                        <tr>
+                          <th>1</th>
+                          <td>2</td>
+                          <td>20</td>
+                          <td>3</td>
+                          <td>80.0</td>
+                          <td>9600</td>
+                          <td>1</td>
+                          <td>3</td>
+                          <td>3</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>5</td>
+                          <td>2007</td>
+                          <td>8</td>
+                          <td>4</td>
+                          <td>181500</td>
+                        </tr>
+                        <tr>
+                          <th>2</th>
+                          <td>3</td>
+                          <td>60</td>
+                          <td>3</td>
+                          <td>68.0</td>
+                          <td>11250</td>
+                          <td>1</td>
+                          <td>0</td>
+                          <td>3</td>
+                          <td>0</td>
+                          <td>4</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>9</td>
+                          <td>2008</td>
+                          <td>8</td>
+                          <td>4</td>
+                          <td>223500</td>
+                        </tr>
+                        <tr>
+                          <th>3</th>
+                          <td>4</td>
+                          <td>70</td>
+                          <td>3</td>
+                          <td>60.0</td>
+                          <td>9550</td>
+                          <td>1</td>
+                          <td>0</td>
+                          <td>3</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>...</td>
+                          <td>272</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>2006</td>
+                          <td>8</td>
+                          <td>0</td>
+                          <td>140000</td>
+                        </tr>
+                        <tr>
+                          <th>4</th>
+                          <td>5</td>
+                          <td>60</td>
+                          <td>3</td>
+                          <td>84.0</td>
+                          <td>14260</td>
+                          <td>1</td>
+                          <td>0</td>
+                          <td>3</td>
+                          <td>0</td>
+                          <td>2</td>
+                          <td>...</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>0</td>
+                          <td>12</td>
+                          <td>2008</td>
+                          <td>8</td>
+                          <td>4</td>
+                          <td>250000</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <p>5 rows × 75 columns</p>
+                    </div>
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                n = len(objectCols)
+                n
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                37
+            </pre>
+        </div>
+    </section>
+    <section>
+        <p>After label encoding, the histograms are plotted to explore which categorial value is most frequent in the column. </p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                plt.figure(figsize=(10,30))
+                for i in range(len(objectCols[:10])):
+                    plt.subplot(5,2,i+1)
+                    plt.hist(df3[objectCols[i]])
+                    plt.title(objectCols[i])
+                    # Get the unique categories and their counts
+                    categories, counts = zip(*cat_map[i].items())
+                    
+                    # Set the positions and labels for xticks
+                    positions = range(len(categories))
+                    labels = categories
+                    
+                    # Set the xticklabels
+                    plt.xticks(positions, labels, rotation=45)  # Rotate labels for better readability
+                plt.tight_layout()
+            </pre>
+        </div>
+    </section>           
+    <section>        
+        <div class="figure">
+            <img src="eight.png" alt="Eight">            
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                plt.figure(figsize=(10,30))
+                for i in range(len(objectCols[10:20])):
+                    plt.subplot(5,2,i+1)
+                    plt.hist(df3[objectCols[i+10]])
+                    plt.title(objectCols[i+10])
+                    # Get the unique categories and their counts
+                    categories, counts = zip(*cat_map[i+10].items())
+                    
+                    # Set the positions and labels for xticks
+                    positions = range(len(categories))
+                    labels = categories
+                    
+                    # Set the xticklabels
+                    plt.xticks(positions, labels, rotation=45)  # Rotate labels for better readability
+                plt.tight_layout()
+            </pre>
+        </div>
+    </section>    
+    <section>
+        <div class="figure">
+            <img src="nine.png" alt="Nine">           
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                plt.figure(figsize=(10,30))
+                for i in range(len(objectCols[20:])):
+                    plt.subplot(9,2,i+1)
+                    plt.hist(df3[objectCols[i+20]])
+                    plt.title(objectCols[i+20])
+                    # Get the unique categories and their counts
+                    categories, counts = zip(*cat_map[i+20].items())
+                    
+                    # Set the positions and labels for xticks
+                    positions = range(len(categories))
+                    labels = categories
+                    
+                    # Set the xticklabels
+                    plt.xticks(positions, labels, rotation=45)  # Rotate labels for better readability
+                plt.tight_layout()
+            </pre>
+        </div>
+    </section>
+    <section>
+        <div class="figure">
+            <img src="ten.png" alt="Ten">           
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                n = len(df3.columns)
+                n
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                75
+            </pre>
+        </div>
+    </section>   
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                df3.columns
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Index(['Id', 'MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street',
+                        'LotShape', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope',
+                        'Neighborhood', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle',
+                        'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', 'RoofStyle',
+                        'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrArea', 'ExterQual',
+                        'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond', 'BsmtExposure',
+                        'BsmtFinType1', 'BsmtFinSF1', 'BsmtFinType2', 'BsmtFinSF2', 'BsmtUnfSF',
+                        'TotalBsmtSF', 'Heating', 'HeatingQC', 'CentralAir', 'Electrical',
+                        '1stFlrSF', '2ndFlrSF', 'LowQualFinSF', 'GrLivArea', 'BsmtFullBath',
+                        'BsmtHalfBath', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr',
+                        'KitchenQual', 'TotRmsAbvGrd', 'Functional', 'Fireplaces', 'GarageType',
+                        'GarageYrBlt', 'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual',
+                        'GarageCond', 'PavedDrive', 'WoodDeckSF', 'OpenPorchSF',
+                        'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal',
+                        'MoSold', 'YrSold', 'SaleType', 'SaleCondition', 'SalePrice'],
+                        dtype='object')
+            </pre>
+        </div>
+    </section>
+    <section>
+        <h2>Checking correlations and evaluting inflential columns</h2>     
+    </section>   
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                corr_matrix = df3.corr()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                import seaborn as sns
+                plt.figure(figsize=(10, 8))
+                sns.heatmap(corr_matrix, annot=False, cmap='coolwarm', fmt=".2f")
+                plt.title('Correlation Heatmap')
+                plt.show()
+            </pre>
+        </div>
+    </section>    
+    <section>
+        <div class="figure">
+            <img src="eleven.png" alt="Eleven">           
+        </div>
+    </section>
+    <section>        
+        <p>After the correlations are computed we can check which features have positive influences, which negative and which not. A feature is considered influential if the absolute value of correlation between the target and it, is greater than the threshold value which in this project is 0.25.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                corr_coeff = np.zeros((len(newCols)-2))
+                posInfluentCols = []
+                negInfluentCols = []
+                nonInfluentCols = []
+                for i in range(1,len(newCols)-1):
+                    corr_coeff[i-1] = df3[newCols[i]].corr(df3[newCols[-1]])
+                    if (corr_coeff[i-1] > -0.2) and (corr_coeff[i-1] < 0.2):
+                        nonInfluentCols.append(newCols[i])
+                    elif corr_coeff[i-1] < -0.2:
+                        negInfluentCols.append(newCols[i])
+                    else:
+                        posInfluentCols.append(newCols[i])
+            </pre>
+        </div>
+    </section>   
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                print(posInfluentCols)
+                len(posInfluentCols)
+            </pre>
+        </div>
+    </section>  
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                ['LotFrontage', 'LotArea', 'Neighborhood', 'OverallQual', 'YearBuilt', 'YearRemodAdd', 'RoofStyle', 'MasVnrArea', 'Foundation', 'BsmtFinSF1', 'BsmtUnfSF', 'TotalBsmtSF', 'CentralAir', 'Electrical', '1stFlrSF', '2ndFlrSF', 'GrLivArea', 'BsmtFullBath', 'FullBath', 'HalfBath', 'TotRmsAbvGrd', 'Fireplaces', 'GarageYrBlt', 'GarageCars', 'GarageArea', 'PavedDrive', 'WoodDeckSF', 'OpenPorchSF', 'SaleCondition']
+            </pre>
+        </div>
+    </section>   
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                29
+            </pre>                
+        </div>
+    </section>   
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                print(negInfluentCols)
+                len(negInfluentCols)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                ['LotShape', 'ExterQual', 'BsmtQual', 'BsmtExposure', 'HeatingQC', 'KitchenQual', 'GarageType', 'GarageFinish']
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                8
+            </pre>                
+        </div>
+    </section>
+
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                print(nonInfluentCols)
+                len(nonInfluentCols)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                ['MSSubClass', 'MSZoning', 'Street', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle', 'OverallCond', 'RoofMatl', 'Exterior1st', 'Exterior2nd', 'ExterCond', 'BsmtCond', 'BsmtFinType1', 'BsmtFinType2', 'BsmtFinSF2', 'Heating', 'LowQualFinSF', 'BsmtHalfBath', 'BedroomAbvGr', 'KitchenAbvGr', 'Functional', 'GarageQual', 'GarageCond', 'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal', 'MoSold', 'YrSold', 'SaleType']
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                36
+            </pre>                
+        </div>
+    </section>
+    <section>
+        <p>We will fit the Linear Regression Model using all the features and considering only influential features later.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                from sklearn.model_selection import train_test_split
+                from sklearn.linear_model import LinearRegression
+                from sklearn.metrics import mean_squared_error, r2_score
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                X = df3[newCols[1:-1]].values
+                X.shape
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1460, 73)
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                y = df3[newCols[-1]].values
+                print(y.shape)
+                y[:10]  
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1460,)
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                array([208500, 181500, 223500, 140000, 250000, 143000, 307000, 200000,
+                        129900, 118000], dtype=int64)
+            </pre>                
+        </div>
+    </section>    
+    <section> 
+        <h2>Feature scaling</h2>       
+        <div class="code-container">
+            <pre class="code">
+                from sklearn.preprocessing import StandardScaler                
+                scaler = StandardScaler()
+                X_scaled = scaler.fit_transform(X)
+            </pre>
+        </div>
+    </section>    
+    <section> 
+        <h2>split dataset into training and test datasets</h2>       
+        <div class="code-container">
+            <pre class="code">
+                X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+            </pre>
+        </div>
+    </section>    
+    <section> 
+        <h2>training the model</h2>       
+        <div class="code-container">
+            <pre class="code">
+                model = LinearRegression()                
+                model.fit(X_train, y_train)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                <style>#sk-container-id-1 {
+                    /* Definition of color scheme common for light and dark mode */
+                    --sklearn-color-text: black;
+                    --sklearn-color-line: gray;
+                    /* Definition of color scheme for unfitted estimators */
+                    --sklearn-color-unfitted-level-0: #fff5e6;
+                    --sklearn-color-unfitted-level-1: #f6e4d2;
+                    --sklearn-color-unfitted-level-2: #ffe0b3;
+                    --sklearn-color-unfitted-level-3: chocolate;
+                    /* Definition of color scheme for fitted estimators */
+                    --sklearn-color-fitted-level-0: #f0f8ff;
+                    --sklearn-color-fitted-level-1: #d4ebff;
+                    --sklearn-color-fitted-level-2: #b3dbfd;
+                    --sklearn-color-fitted-level-3: cornflowerblue;
+                  
+                    /* Specific color for light theme */
+                    --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+                    --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, white)));
+                    --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+                    --sklearn-color-icon: #696969;
+                  
+                    @media (prefers-color-scheme: dark) {
+                      /* Redefinition of color scheme for dark theme */
+                      --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+                      --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, #111)));
+                      --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+                      --sklearn-color-icon: #878787;
+                    }
+                  }
+                  
+                  #sk-container-id-1 {
+                    color: var(--sklearn-color-text);
+                  }
+                  
+                  #sk-container-id-1 pre {
+                    padding: 0;
+                  }
+                  
+                  #sk-container-id-1 input.sk-hidden--visually {
+                    border: 0;
+                    clip: rect(1px 1px 1px 1px);
+                    clip: rect(1px, 1px, 1px, 1px);
+                    height: 1px;
+                    margin: -1px;
+                    overflow: hidden;
+                    padding: 0;
+                    position: absolute;
+                    width: 1px;
+                  }
+                  
+                  #sk-container-id-1 div.sk-dashed-wrapped {
+                    border: 1px dashed var(--sklearn-color-line);
+                    margin: 0 0.4em 0.5em 0.4em;
+                    box-sizing: border-box;
+                    padding-bottom: 0.4em;
+                    background-color: var(--sklearn-color-background);
+                  }
+                  
+                  #sk-container-id-1 div.sk-container {
+                    /* jupyter's `normalize.less` sets `[hidden] { display: none; }`
+                       but bootstrap.min.css set `[hidden] { display: none !important; }`
+                       so we also need the `!important` here to be able to override the
+                       default hidden behavior on the sphinx rendered scikit-learn.org.
+                       See: https://github.com/scikit-learn/scikit-learn/issues/21755 */
+                    display: inline-block !important;
+                    position: relative;
+                  }
+                  
+                  #sk-container-id-1 div.sk-text-repr-fallback {
+                    display: none;
+                  }
+                  
+                  div.sk-parallel-item,
+                  div.sk-serial,
+                  div.sk-item {
+                    /* draw centered vertical line to link estimators */
+                    background-image: linear-gradient(var(--sklearn-color-text-on-default-background), var(--sklearn-color-text-on-default-background));
+                    background-size: 2px 100%;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                  }
+                  
+                  /* Parallel-specific style estimator block */
+                  
+                  #sk-container-id-1 div.sk-parallel-item::after {
+                    content: "";
+                    width: 100%;
+                    border-bottom: 2px solid var(--sklearn-color-text-on-default-background);
+                    flex-grow: 1;
+                  }
+                  
+                  #sk-container-id-1 div.sk-parallel {
+                    display: flex;
+                    align-items: stretch;
+                    justify-content: center;
+                    background-color: var(--sklearn-color-background);
+                    position: relative;
+                  }
+                  
+                  #sk-container-id-1 div.sk-parallel-item {
+                    display: flex;
+                    flex-direction: column;
+                  }
+                  
+                  #sk-container-id-1 div.sk-parallel-item:first-child::after {
+                    align-self: flex-end;
+                    width: 50%;
+                  }
+                  
+                  #sk-container-id-1 div.sk-parallel-item:last-child::after {
+                    align-self: flex-start;
+                    width: 50%;
+                  }
+                  
+                  #sk-container-id-1 div.sk-parallel-item:only-child::after {
+                    width: 0;
+                  }
+                  
+                  /* Serial-specific style estimator block */
+                  
+                  #sk-container-id-1 div.sk-serial {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    background-color: var(--sklearn-color-background);
+                    padding-right: 1em;
+                    padding-left: 1em;
+                  }
+                  
+                  
+                  /* Toggleable style: style used for estimator/Pipeline/ColumnTransformer box that is
+                  clickable and can be expanded/collapsed.
+                  - Pipeline and ColumnTransformer use this feature and define the default style
+                  - Estimators will overwrite some part of the style using the `sk-estimator` class
+                  */
+                  
+                  /* Pipeline and ColumnTransformer style (default) */
+                  
+                  #sk-container-id-1 div.sk-toggleable {
+                    /* Default theme specific background. It is overwritten whether we have a
+                    specific estimator or a Pipeline/ColumnTransformer */
+                    background-color: var(--sklearn-color-background);
+                  }
+                  
+                  /* Toggleable label */
+                  #sk-container-id-1 label.sk-toggleable__label {
+                    cursor: pointer;
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 0;
+                    padding: 0.5em;
+                    box-sizing: border-box;
+                    text-align: center;
+                  }
+                  
+                  #sk-container-id-1 label.sk-toggleable__label-arrow:before {
+                    /* Arrow on the left of the label */
+                    content: "▸";
+                    float: left;
+                    margin-right: 0.25em;
+                    color: var(--sklearn-color-icon);
+                  }
+                  
+                  #sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {
+                    color: var(--sklearn-color-text);
+                  }
+                  
+                  /* Toggleable content - dropdown */
+                  
+                  #sk-container-id-1 div.sk-toggleable__content {
+                    max-height: 0;
+                    max-width: 0;
+                    overflow: hidden;
+                    text-align: left;
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-0);
+                  }
+                  
+                  #sk-container-id-1 div.sk-toggleable__content.fitted {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-0);
+                  }
+                  
+                  #sk-container-id-1 div.sk-toggleable__content pre {
+                    margin: 0.2em;
+                    border-radius: 0.25em;
+                    color: var(--sklearn-color-text);
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-0);
+                  }
+                  
+                  #sk-container-id-1 div.sk-toggleable__content.fitted pre {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-fitted-level-0);
+                  }
+                  
+                  #sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {
+                    /* Expand drop-down */
+                    max-height: 200px;
+                    max-width: 100%;
+                    overflow: auto;
+                  }
+                  
+                  #sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
+                    content: "▾";
+                  }
+                  
+                  /* Pipeline/ColumnTransformer-specific style */
+                  
+                  #sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    color: var(--sklearn-color-text);
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  #sk-container-id-1 div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  /* Estimator-specific style */
+                  
+                  /* Colorize estimator box */
+                  #sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  #sk-container-id-1 div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  #sk-container-id-1 div.sk-label label.sk-toggleable__label,
+                  #sk-container-id-1 div.sk-label label {
+                    /* The background is the default theme color */
+                    color: var(--sklearn-color-text-on-default-background);
+                  }
+                  
+                  /* On hover, darken the color of the background */
+                  #sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {
+                    color: var(--sklearn-color-text);
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  /* Label box, darken color on hover, fitted */
+                  #sk-container-id-1 div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+                    color: var(--sklearn-color-text);
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  /* Estimator label */
+                  
+                  #sk-container-id-1 div.sk-label label {
+                    font-family: monospace;
+                    font-weight: bold;
+                    display: inline-block;
+                    line-height: 1.2em;
+                  }
+                  
+                  #sk-container-id-1 div.sk-label-container {
+                    text-align: center;
+                  }
+                  
+                  /* Estimator-specific */
+                  #sk-container-id-1 div.sk-estimator {
+                    font-family: monospace;
+                    border: 1px dotted var(--sklearn-color-border-box);
+                    border-radius: 0.25em;
+                    box-sizing: border-box;
+                    margin-bottom: 0.5em;
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-0);
+                  }
+                  
+                  #sk-container-id-1 div.sk-estimator.fitted {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-0);
+                  }
+                  
+                  /* on hover */
+                  #sk-container-id-1 div.sk-estimator:hover {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  #sk-container-id-1 div.sk-estimator.fitted:hover {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  /* Specification for estimator info (e.g. "i" and "?") */
+                  
+                  /* Common style for "i" and "?" */
+                  
+                  .sk-estimator-doc-link,
+                  a:link.sk-estimator-doc-link,
+                  a:visited.sk-estimator-doc-link {
+                    float: right;
+                    font-size: smaller;
+                    line-height: 1em;
+                    font-family: monospace;
+                    background-color: var(--sklearn-color-background);
+                    border-radius: 1em;
+                    height: 1em;
+                    width: 1em;
+                    text-decoration: none !important;
+                    margin-left: 1ex;
+                    /* unfitted */
+                    border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+                    color: var(--sklearn-color-unfitted-level-1);
+                  }
+                  
+                  .sk-estimator-doc-link.fitted,
+                  a:link.sk-estimator-doc-link.fitted,
+                  a:visited.sk-estimator-doc-link.fitted {
+                    /* fitted */
+                    border: var(--sklearn-color-fitted-level-1) 1pt solid;
+                    color: var(--sklearn-color-fitted-level-1);
+                  }
+                  
+                  /* On hover */
+                  div.sk-estimator:hover .sk-estimator-doc-link:hover,
+                  .sk-estimator-doc-link:hover,
+                  div.sk-label-container:hover .sk-estimator-doc-link:hover,
+                  .sk-estimator-doc-link:hover {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-3);
+                    color: var(--sklearn-color-background);
+                    text-decoration: none;
+                  }
+                  
+                  div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
+                  .sk-estimator-doc-link.fitted:hover,
+                  div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
+                  .sk-estimator-doc-link.fitted:hover {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-3);
+                    color: var(--sklearn-color-background);
+                    text-decoration: none;
+                  }
+                  
+                  /* Span, style for the box shown on hovering the info icon */
+                  .sk-estimator-doc-link span {
+                    display: none;
+                    z-index: 9999;
+                    position: relative;
+                    font-weight: normal;
+                    right: .2ex;
+                    padding: .5ex;
+                    margin: .5ex;
+                    width: min-content;
+                    min-width: 20ex;
+                    max-width: 50ex;
+                    color: var(--sklearn-color-text);
+                    box-shadow: 2pt 2pt 4pt #999;
+                    /* unfitted */
+                    background: var(--sklearn-color-unfitted-level-0);
+                    border: .5pt solid var(--sklearn-color-unfitted-level-3);
+                  }
+                  
+                  .sk-estimator-doc-link.fitted span {
+                    /* fitted */
+                    background: var(--sklearn-color-fitted-level-0);
+                    border: var(--sklearn-color-fitted-level-3);
+                  }
+                  
+                  .sk-estimator-doc-link:hover span {
+                    display: block;
+                  }
+                  
+                  /* "?"-specific style due to the `<a>` HTML tag */
+                  
+                  #sk-container-id-1 a.estimator_doc_link {
+                    float: right;
+                    font-size: 1rem;
+                    line-height: 1em;
+                    font-family: monospace;
+                    background-color: var(--sklearn-color-background);
+                    border-radius: 1rem;
+                    height: 1rem;
+                    width: 1rem;
+                    text-decoration: none;
+                    /* unfitted */
+                    color: var(--sklearn-color-unfitted-level-1);
+                    border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+                  }
+                  
+                  #sk-container-id-1 a.estimator_doc_link.fitted {
+                    /* fitted */
+                    border: var(--sklearn-color-fitted-level-1) 1pt solid;
+                    color: var(--sklearn-color-fitted-level-1);
+                  }
+                  
+                  /* On hover */
+                  #sk-container-id-1 a.estimator_doc_link:hover {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-3);
+                    color: var(--sklearn-color-background);
+                    text-decoration: none;
+                  }
+                  
+                  #sk-container-id-1 a.estimator_doc_link.fitted:hover {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-3);
+                  }
+                  </style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>LinearRegression()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox" checked><label for="sk-estimator-id-1" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;LinearRegression<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.linear_model.LinearRegression.html">?<span>Documentation for LinearRegression</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>LinearRegression()</pre></div> </div></div></div></div>
+
+            </pre>                
+        </div>
+    </section>
+    <section> 
+        <h2>predict test dataset for Validation</h2>       
+        <div class="code-container">
+            <pre class="code">
+                y_pred = model.predict(X_test)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                r_squared = r2_score(y_test, y_pred)
+                mse = mean_squared_error(y_test, y_pred)
+                print("R-squared value:", r_squared)
+                print("Mean Squared Error:", mse)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                R-squared value: 0.8455877810807907
+                Mean Squared Error: 1184392089.4859266
+            </pre>                
+        </div>
+    </section>
+    <section>
+        <p>As seen above and below, R^2 value is 0.85 with the model considering all the features.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                RSS = np.sum((y_test-y_pred)**2)
+                TSS = np.sum((y_test-np.mean(y_test))**2)
+                R2_value = 1 - RSS/TSS
+                R2_value
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                0.8455877810807907
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                newCols
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                Index(['Id', 'MSSubClass', 'MSZoning', 'LotFrontage', 'LotArea', 'Street',
+                        'LotShape', 'LandContour', 'Utilities', 'LotConfig', 'LandSlope',
+                        'Neighborhood', 'Condition1', 'Condition2', 'BldgType', 'HouseStyle',
+                        'OverallQual', 'OverallCond', 'YearBuilt', 'YearRemodAdd', 'RoofStyle',
+                        'RoofMatl', 'Exterior1st', 'Exterior2nd', 'MasVnrArea', 'ExterQual',
+                        'ExterCond', 'Foundation', 'BsmtQual', 'BsmtCond', 'BsmtExposure',
+                        'BsmtFinType1', 'BsmtFinSF1', 'BsmtFinType2', 'BsmtFinSF2', 'BsmtUnfSF',
+                        'TotalBsmtSF', 'Heating', 'HeatingQC', 'CentralAir', 'Electrical',
+                        '1stFlrSF', '2ndFlrSF', 'LowQualFinSF', 'GrLivArea', 'BsmtFullBath',
+                        'BsmtHalfBath', 'FullBath', 'HalfBath', 'BedroomAbvGr', 'KitchenAbvGr',
+                        'KitchenQual', 'TotRmsAbvGrd', 'Functional', 'Fireplaces', 'GarageType',
+                        'GarageYrBlt', 'GarageFinish', 'GarageCars', 'GarageArea', 'GarageQual',
+                        'GarageCond', 'PavedDrive', 'WoodDeckSF', 'OpenPorchSF',
+                        'EnclosedPorch', '3SsnPorch', 'ScreenPorch', 'PoolArea', 'MiscVal',
+                        'MoSold', 'YrSold', 'SaleType', 'SaleCondition', 'SalePrice'],
+                        dtype='object')
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                LotAreaMean = X[:,3].mean()
+                LotAreaStd = X[:,3].std()
+                LotAreaStd
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                9977.846105448105
+            </pre>                
+        </div>
+    </section>
+    <section>
+        <p>Now, 'LotArea' feature, actual and predicted values of target for the test set are plotted to compare the results with the actual values.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                fig, ax = plt.subplots()
+                ax.scatter(X_test[:, 3]*LotAreaStd+LotAreaMean, y_test, color='b', marker='o')
+                ax.scatter(X_test[:, 3]*LotAreaStd+LotAreaMean, y_pred, color='r', marker='d')
+                ax.set_xlabel('Lot Area (sqared feet)')
+                ax.set_ylabel('Sale Price (USD)')
+                ax.legend(['actual','prediction'])
+                ax.set_title(f'sklearn Model with $R^{2}$ = {r_squared:.2f}')
+                ax.grid(alpha=0.2)
+                plt.show()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="figure">
+            <img src="twelve.png" alt="Twelve">            
+        </div>
+    </section>
+    <section>
+        <p>As seen above, actual and prediction match quite well except for some housing with higher prices. This may be caused by the fact that some housing though very old has high prices because of their ancient values.
+
+            Then, the model will be tested with using only influential features.</p>
+    </section>    
+    <section> 
+        <h2>Using only influential features</h2>       
+        <div class="code-container">
+            <pre class="code">
+                InfluentCols = posInfluentCols + negInfluentCols
+                InfluentCols
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                ['LotFrontage',
+                'LotArea',
+                'Neighborhood',
+                'OverallQual',
+                'YearBuilt',
+                'YearRemodAdd',
+                'RoofStyle',
+                'MasVnrArea',
+                'Foundation',
+                'BsmtFinSF1',
+                'BsmtUnfSF',
+                'TotalBsmtSF',
+                'CentralAir',
+                'Electrical',
+                '1stFlrSF',
+                '2ndFlrSF',
+                'GrLivArea',
+                'BsmtFullBath',
+                'FullBath',
+                'HalfBath',
+                'TotRmsAbvGrd',
+                'Fireplaces',
+                'GarageYrBlt',
+                'GarageCars',
+                'GarageArea',
+                'PavedDrive',
+                'WoodDeckSF',
+                'OpenPorchSF',
+                'SaleCondition',
+                'LotShape',
+                'ExterQual',
+                'BsmtQual',
+                'BsmtExposure',
+                'HeatingQC',
+                'KitchenQual',
+                'GarageType',
+                'GarageFinish']
+                Output is truncated. View as a scrollable element or open in a text editor. Adjust cell output settings...
+            </pre>                
+        </div>
+    </section>   
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                X_reduced = df3[InfluentCols].values
+                X_reduced.shape
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1460, 37)
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                scaler = StandardScaler()
+                X_reduced_scaled = scaler.fit_transform(X_reduced)
+                X_reduced_scaled.shape
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (1460, 37)
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">                
+                X_reduced_train, X_reduced_test, y_reduced_train, y_reduced_test = train_test_split(X_reduced_scaled, y, test_size=0.2, random_state=42)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                X_reduced_train.shape, y_reduced_train.shape
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                ((1168, 37), (1168,))
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                X_reduced_test.shape
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                (292, 37)
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                model2 = LinearRegression()
+                model2.fit(X_reduced_train, y_reduced_train)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                <style>#sk-container-id-2 {
+                    /* Definition of color scheme common for light and dark mode */
+                    --sklearn-color-text: black;
+                    --sklearn-color-line: gray;
+                    /* Definition of color scheme for unfitted estimators */
+                    --sklearn-color-unfitted-level-0: #fff5e6;
+                    --sklearn-color-unfitted-level-1: #f6e4d2;
+                    --sklearn-color-unfitted-level-2: #ffe0b3;
+                    --sklearn-color-unfitted-level-3: chocolate;
+                    /* Definition of color scheme for fitted estimators */
+                    --sklearn-color-fitted-level-0: #f0f8ff;
+                    --sklearn-color-fitted-level-1: #d4ebff;
+                    --sklearn-color-fitted-level-2: #b3dbfd;
+                    --sklearn-color-fitted-level-3: cornflowerblue;
+                  
+                    /* Specific color for light theme */
+                    --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+                    --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, white)));
+                    --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, black)));
+                    --sklearn-color-icon: #696969;
+                  
+                    @media (prefers-color-scheme: dark) {
+                      /* Redefinition of color scheme for dark theme */
+                      --sklearn-color-text-on-default-background: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+                      --sklearn-color-background: var(--sg-background-color, var(--theme-background, var(--jp-layout-color0, #111)));
+                      --sklearn-color-border-box: var(--sg-text-color, var(--theme-code-foreground, var(--jp-content-font-color1, white)));
+                      --sklearn-color-icon: #878787;
+                    }
+                  }
+                  
+                  #sk-container-id-2 {
+                    color: var(--sklearn-color-text);
+                  }
+                  
+                  #sk-container-id-2 pre {
+                    padding: 0;
+                  }
+                  
+                  #sk-container-id-2 input.sk-hidden--visually {
+                    border: 0;
+                    clip: rect(1px 1px 1px 1px);
+                    clip: rect(1px, 1px, 1px, 1px);
+                    height: 1px;
+                    margin: -1px;
+                    overflow: hidden;
+                    padding: 0;
+                    position: absolute;
+                    width: 1px;
+                  }
+                  
+                  #sk-container-id-2 div.sk-dashed-wrapped {
+                    border: 1px dashed var(--sklearn-color-line);
+                    margin: 0 0.4em 0.5em 0.4em;
+                    box-sizing: border-box;
+                    padding-bottom: 0.4em;
+                    background-color: var(--sklearn-color-background);
+                  }
+                  
+                  #sk-container-id-2 div.sk-container {
+                    /* jupyter's `normalize.less` sets `[hidden] { display: none; }`
+                       but bootstrap.min.css set `[hidden] { display: none !important; }`
+                       so we also need the `!important` here to be able to override the
+                       default hidden behavior on the sphinx rendered scikit-learn.org.
+                       See: https://github.com/scikit-learn/scikit-learn/issues/21755 */
+                    display: inline-block !important;
+                    position: relative;
+                  }
+                  
+                  #sk-container-id-2 div.sk-text-repr-fallback {
+                    display: none;
+                  }
+                  
+                  div.sk-parallel-item,
+                  div.sk-serial,
+                  div.sk-item {
+                    /* draw centered vertical line to link estimators */
+                    background-image: linear-gradient(var(--sklearn-color-text-on-default-background), var(--sklearn-color-text-on-default-background));
+                    background-size: 2px 100%;
+                    background-repeat: no-repeat;
+                    background-position: center center;
+                  }
+                  
+                  /* Parallel-specific style estimator block */
+                  
+                  #sk-container-id-2 div.sk-parallel-item::after {
+                    content: "";
+                    width: 100%;
+                    border-bottom: 2px solid var(--sklearn-color-text-on-default-background);
+                    flex-grow: 1;
+                  }
+                  
+                  #sk-container-id-2 div.sk-parallel {
+                    display: flex;
+                    align-items: stretch;
+                    justify-content: center;
+                    background-color: var(--sklearn-color-background);
+                    position: relative;
+                  }
+                  
+                  #sk-container-id-2 div.sk-parallel-item {
+                    display: flex;
+                    flex-direction: column;
+                  }
+                  
+                  #sk-container-id-2 div.sk-parallel-item:first-child::after {
+                    align-self: flex-end;
+                    width: 50%;
+                  }
+                  
+                  #sk-container-id-2 div.sk-parallel-item:last-child::after {
+                    align-self: flex-start;
+                    width: 50%;
+                  }
+                  
+                  #sk-container-id-2 div.sk-parallel-item:only-child::after {
+                    width: 0;
+                  }
+                  
+                  /* Serial-specific style estimator block */
+                  
+                  #sk-container-id-2 div.sk-serial {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    background-color: var(--sklearn-color-background);
+                    padding-right: 1em;
+                    padding-left: 1em;
+                  }
+                  
+                  
+                  /* Toggleable style: style used for estimator/Pipeline/ColumnTransformer box that is
+                  clickable and can be expanded/collapsed.
+                  - Pipeline and ColumnTransformer use this feature and define the default style
+                  - Estimators will overwrite some part of the style using the `sk-estimator` class
+                  */
+                  
+                  /* Pipeline and ColumnTransformer style (default) */
+                  
+                  #sk-container-id-2 div.sk-toggleable {
+                    /* Default theme specific background. It is overwritten whether we have a
+                    specific estimator or a Pipeline/ColumnTransformer */
+                    background-color: var(--sklearn-color-background);
+                  }
+                  
+                  /* Toggleable label */
+                  #sk-container-id-2 label.sk-toggleable__label {
+                    cursor: pointer;
+                    display: block;
+                    width: 100%;
+                    margin-bottom: 0;
+                    padding: 0.5em;
+                    box-sizing: border-box;
+                    text-align: center;
+                  }
+                  
+                  #sk-container-id-2 label.sk-toggleable__label-arrow:before {
+                    /* Arrow on the left of the label */
+                    content: "▸";
+                    float: left;
+                    margin-right: 0.25em;
+                    color: var(--sklearn-color-icon);
+                  }
+                  
+                  #sk-container-id-2 label.sk-toggleable__label-arrow:hover:before {
+                    color: var(--sklearn-color-text);
+                  }
+                  
+                  /* Toggleable content - dropdown */
+                  
+                  #sk-container-id-2 div.sk-toggleable__content {
+                    max-height: 0;
+                    max-width: 0;
+                    overflow: hidden;
+                    text-align: left;
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-0);
+                  }
+                  
+                  #sk-container-id-2 div.sk-toggleable__content.fitted {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-0);
+                  }
+                  
+                  #sk-container-id-2 div.sk-toggleable__content pre {
+                    margin: 0.2em;
+                    border-radius: 0.25em;
+                    color: var(--sklearn-color-text);
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-0);
+                  }
+                  
+                  #sk-container-id-2 div.sk-toggleable__content.fitted pre {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-fitted-level-0);
+                  }
+                  
+                  #sk-container-id-2 input.sk-toggleable__control:checked~div.sk-toggleable__content {
+                    /* Expand drop-down */
+                    max-height: 200px;
+                    max-width: 100%;
+                    overflow: auto;
+                  }
+                  
+                  #sk-container-id-2 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {
+                    content: "▾";
+                  }
+                  
+                  /* Pipeline/ColumnTransformer-specific style */
+                  
+                  #sk-container-id-2 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    color: var(--sklearn-color-text);
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  #sk-container-id-2 div.sk-label.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  /* Estimator-specific style */
+                  
+                  /* Colorize estimator box */
+                  #sk-container-id-2 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  #sk-container-id-2 div.sk-estimator.fitted input.sk-toggleable__control:checked~label.sk-toggleable__label {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  #sk-container-id-2 div.sk-label label.sk-toggleable__label,
+                  #sk-container-id-2 div.sk-label label {
+                    /* The background is the default theme color */
+                    color: var(--sklearn-color-text-on-default-background);
+                  }
+                  
+                  /* On hover, darken the color of the background */
+                  #sk-container-id-2 div.sk-label:hover label.sk-toggleable__label {
+                    color: var(--sklearn-color-text);
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  /* Label box, darken color on hover, fitted */
+                  #sk-container-id-2 div.sk-label.fitted:hover label.sk-toggleable__label.fitted {
+                    color: var(--sklearn-color-text);
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  /* Estimator label */
+                  
+                  #sk-container-id-2 div.sk-label label {
+                    font-family: monospace;
+                    font-weight: bold;
+                    display: inline-block;
+                    line-height: 1.2em;
+                  }
+                  
+                  #sk-container-id-2 div.sk-label-container {
+                    text-align: center;
+                  }
+                  
+                  /* Estimator-specific */
+                  #sk-container-id-2 div.sk-estimator {
+                    font-family: monospace;
+                    border: 1px dotted var(--sklearn-color-border-box);
+                    border-radius: 0.25em;
+                    box-sizing: border-box;
+                    margin-bottom: 0.5em;
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-0);
+                  }
+                  
+                  #sk-container-id-2 div.sk-estimator.fitted {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-0);
+                  }
+                  
+                  /* on hover */
+                  #sk-container-id-2 div.sk-estimator:hover {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-2);
+                  }
+                  
+                  #sk-container-id-2 div.sk-estimator.fitted:hover {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-2);
+                  }
+                  
+                  /* Specification for estimator info (e.g. "i" and "?") */
+                  
+                  /* Common style for "i" and "?" */
+                  
+                  .sk-estimator-doc-link,
+                  a:link.sk-estimator-doc-link,
+                  a:visited.sk-estimator-doc-link {
+                    float: right;
+                    font-size: smaller;
+                    line-height: 1em;
+                    font-family: monospace;
+                    background-color: var(--sklearn-color-background);
+                    border-radius: 1em;
+                    height: 1em;
+                    width: 1em;
+                    text-decoration: none !important;
+                    margin-left: 1ex;
+                    /* unfitted */
+                    border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+                    color: var(--sklearn-color-unfitted-level-1);
+                  }
+                  
+                  .sk-estimator-doc-link.fitted,
+                  a:link.sk-estimator-doc-link.fitted,
+                  a:visited.sk-estimator-doc-link.fitted {
+                    /* fitted */
+                    border: var(--sklearn-color-fitted-level-1) 1pt solid;
+                    color: var(--sklearn-color-fitted-level-1);
+                  }
+                  
+                  /* On hover */
+                  div.sk-estimator:hover .sk-estimator-doc-link:hover,
+                  .sk-estimator-doc-link:hover,
+                  div.sk-label-container:hover .sk-estimator-doc-link:hover,
+                  .sk-estimator-doc-link:hover {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-3);
+                    color: var(--sklearn-color-background);
+                    text-decoration: none;
+                  }
+                  
+                  div.sk-estimator.fitted:hover .sk-estimator-doc-link.fitted:hover,
+                  .sk-estimator-doc-link.fitted:hover,
+                  div.sk-label-container:hover .sk-estimator-doc-link.fitted:hover,
+                  .sk-estimator-doc-link.fitted:hover {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-3);
+                    color: var(--sklearn-color-background);
+                    text-decoration: none;
+                  }
+                  
+                  /* Span, style for the box shown on hovering the info icon */
+                  .sk-estimator-doc-link span {
+                    display: none;
+                    z-index: 9999;
+                    position: relative;
+                    font-weight: normal;
+                    right: .2ex;
+                    padding: .5ex;
+                    margin: .5ex;
+                    width: min-content;
+                    min-width: 20ex;
+                    max-width: 50ex;
+                    color: var(--sklearn-color-text);
+                    box-shadow: 2pt 2pt 4pt #999;
+                    /* unfitted */
+                    background: var(--sklearn-color-unfitted-level-0);
+                    border: .5pt solid var(--sklearn-color-unfitted-level-3);
+                  }
+                  
+                  .sk-estimator-doc-link.fitted span {
+                    /* fitted */
+                    background: var(--sklearn-color-fitted-level-0);
+                    border: var(--sklearn-color-fitted-level-3);
+                  }
+                  
+                  .sk-estimator-doc-link:hover span {
+                    display: block;
+                  }
+                  
+                  /* "?"-specific style due to the `<a>` HTML tag */
+                  
+                  #sk-container-id-2 a.estimator_doc_link {
+                    float: right;
+                    font-size: 1rem;
+                    line-height: 1em;
+                    font-family: monospace;
+                    background-color: var(--sklearn-color-background);
+                    border-radius: 1rem;
+                    height: 1rem;
+                    width: 1rem;
+                    text-decoration: none;
+                    /* unfitted */
+                    color: var(--sklearn-color-unfitted-level-1);
+                    border: var(--sklearn-color-unfitted-level-1) 1pt solid;
+                  }
+                  
+                  #sk-container-id-2 a.estimator_doc_link.fitted {
+                    /* fitted */
+                    border: var(--sklearn-color-fitted-level-1) 1pt solid;
+                    color: var(--sklearn-color-fitted-level-1);
+                  }
+                  
+                  /* On hover */
+                  #sk-container-id-2 a.estimator_doc_link:hover {
+                    /* unfitted */
+                    background-color: var(--sklearn-color-unfitted-level-3);
+                    color: var(--sklearn-color-background);
+                    text-decoration: none;
+                  }
+                  
+                  #sk-container-id-2 a.estimator_doc_link.fitted:hover {
+                    /* fitted */
+                    background-color: var(--sklearn-color-fitted-level-3);
+                  }
+                  </style><div id="sk-container-id-2" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>LinearRegression()</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br />On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden><div class="sk-item"><div class="sk-estimator fitted sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox" checked><label for="sk-estimator-id-2" class="sk-toggleable__label fitted sk-toggleable__label-arrow fitted">&nbsp;&nbsp;LinearRegression<a class="sk-estimator-doc-link fitted" rel="noreferrer" target="_blank" href="https://scikit-learn.org/1.4/modules/generated/sklearn.linear_model.LinearRegression.html">?<span>Documentation for LinearRegression</span></a><span class="sk-estimator-doc-link fitted">i<span>Fitted</span></span></label><div class="sk-toggleable__content fitted"><pre>LinearRegression()</pre></div> </div></div></div></div>
+            </pre>                
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                y_reduced_pred = model2.predict(X_reduced_test)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                r_squared_reduced = r2_score(y_reduced_test, y_reduced_pred)
+                mse_reduced = mean_squared_error(y_reduced_test, y_reduced_pred)
+                print("R-squared value:", r_squared_reduced)
+                print("Mean Squared Error:", mse_reduced)
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                R-squared value: 0.8388973782038281
+                Mean Squared Error: 1235709662.009733
+            </pre>                
+        </div>
+    </section>
+    <section>
+        <p>As seen above, the R-squared value is 0.84 which is almost the same as the model with full features.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">
+                LotAreaMean = X_reduced[:,1].mean()
+                LotAreaStd = X_reduced[:,1].std()
+                LotAreaStd
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="output-code">
+                9977.846105448105
+            </pre>                
+        </div>
+    </section>
+    <section>
+        <p>Again the model's results are plotted to compare acutal and prediction of target for the test dataset.</p>
+    </section>
+    <section>        
+        <div class="code-container">
+            <pre class="code">                
+                fig, ax = plt.subplots()
+                ax.scatter(X_reduced_test[:, 1]*LotAreaStd+LotAreaMean, y_reduced_test, color='b', marker='o')
+                ax.scatter(X_reduced_test[:, 1]*LotAreaStd+LotAreaMean, y_reduced_pred, color='r', marker='d')
+                ax.scatter(X_test[:, 3]*LotAreaStd+LotAreaMean, y_pred, color='k', marker='+')
+                ax.set_xlabel('Lot Area (sqared feet)')
+                ax.set_ylabel('Sale Price (USD)')
+                leg_red = f'prediction (reduced), $R^{2}$ = {r_squared_reduced:.2f}'
+                leg_full = f'prediction (full), $R^{2}$ = {r_squared:.2f}'
+                ax.legend(['actual',leg_red, leg_full])
+                ax.set_title(f'sklearn Model with reduced and full features')
+                ax.grid(alpha=0.2)
+                plt.show()
+            </pre>
+        </div>
+    </section>
+    <section>        
+        <div class="figure">
+            <img src="thirteen.png" alt="Thirteen">            
+        </div>
+    </section>   
+    <section>        
+        <p>This simple projects demonstrate that consideration of full features is not always necessary and does not yield significantly different accuracy. Considering only influential feature is sufficient and this should be considered particularly when the dataset has large number of features.
+
+            <br>Moreoever, in this project the threshold value of correlations between the features and the target is set 0.25. However, in practice, this may vary depending on the physical nature of the model and dataset.</p>
+    </section>
+</body>
+</html>
+
+
+
+
+
+
+    
+
+
+
+
+    
+    
+   
+    
+    
+   
+    
+    
+    
